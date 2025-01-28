@@ -1,0 +1,1500 @@
+def save_final_data():
+	global list_general_final
+	try:
+		global list_name
+		global list_date
+		global list_theme
+		global name_files
+		global name_files1
+		global name_files2
+		global name_files3
+		global name_files4
+		global name_files5
+		print(list_name[0])
+		print(list_date[0])
+		print(list_theme[0])
+		list_general = []
+		list_general.append(vvod1.get())
+		list_general.append(vvod2.get())
+		list_general.append(vvod3.get())
+		list_general.append(vvod4.get())
+		list_general.append(list_name)
+		list_general.append(list_date)
+		list_general.append(list_theme)
+		list_name = []
+		list_date = []
+		list_theme = []
+		print(name_files)
+		f = []
+		f = (vvod5.get()).split()
+		list_general.append(f)
+		f = (vvod6.get()).split()
+		list_general.append(f)
+		list_general_final.append(list_general)
+		if len(list_general_final) == 1:
+			posmb1.grid(column=3, row=3)
+			del1.grid(column=4, row=3)
+			name_files1 = name_files
+		if len(list_general_final) == 2:
+			posmb2.grid(column=3, row=4)
+			del2.grid(column=4, row=4)
+			name_files2 = name_files
+		if len(list_general_final) == 3:
+			posmb3.grid(column=3, row=5)
+			del3.grid(column=4, row=5)
+			name_files3 = name_files
+		if len(list_general_final) == 4:
+			posmb4.grid(column=3, row=6)
+			del4.grid(column=4, row=6)
+			name_files4 = name_files
+		if len(list_general_final) == 5:
+			posmb5.grid(column=3, row=7)
+			del5.grid(column=4, row=7)
+			name_files5 = name_files
+		bt1.configure(text = 'Выбрать')
+		bt2.configure(text = 'Выбрать')
+		bt3.configure(text = 'Выбрать')
+		name_files = [0] * 3
+	except:
+		messagebox.showinfo('Важно', 'Не выбраны все необходимые пункты')
+def generiotion_file():
+	k = 0
+	try:
+		while k < len(list_general_final):
+			print(k)
+			b = 0
+			title = list_general_final[k][0]
+			name = list_general_final[k][1]
+			name_class = list_general_final[k][2]
+			year = list_general_final[k][3]
+			Klist_name =  list_general_final[k][4]
+			Klist_date =  list_general_final[k][5]
+			Klist_theme = list_general_final[k][6]
+			Klist_weekday = list_general_final[k][7]
+			list_hours = [0] * 7
+			for i in range(len(Klist_weekday)):
+				list_hours[int(Klist_weekday[i])-1] = int(list_general_final[k][8][i])
+					
+			for i in range(9):
+				list_date_f = []
+				list_month_name= ['Сентябрь','Октябрь','Ноябрь','Декабрь','Январь','Февраль','Март','Апрель','Май']
+				month_name = list_month_name[i]
+				
+				list_month_number = [9,10,11,12,1,2,3,4,5,6]
+				month_number = list_month_number[i]
+				if list_month_number[i] == 1:
+					year = str(int(year)+1)
+				for t in final_date:
+					if (str(t[1]) in Klist_weekday) and (str(t[2]) == str(month_number)) and (str(t[3]) == str(year)):
+						list_date_f.append([t[0],t[1],t[2],list_hours[int(t[1]) - 1 ],1])
+						
+				for t in list_date_f:
+					for d in Klist_date:
+						if	[t[0],t[2]] == [d[0],d[1]]:
+							t[4] = t[4] - 1
+							t.append(d[2])
+							
+				
+				doc = docx.Document()
+				
+				par0 = doc.add_paragraph('Год ')
+				par0.add_run(str(year))
+				par0.add_run('     Месяц     '+ month_name + '    Учитель:  ')
+				par0.add_run(name).bold = True
+				
+				par1 = doc.add_paragraph('                       Вид занятий  ')
+				par1.add_run('Индивидуальные').bold = True
+				par1.add_run('____________________________________.')
+				
+				par2 = doc.add_paragraph('Предмет ')
+				par2.add_run(str(title))
+				par2.add_run(', ')
+				par2.add_run(str(name_class))
+				
+				for t in Klist_weekday:
+					if str(1) == str(t):
+						par2.add_run(', ')
+						par2.add_run('пн')
+					if str(2) == str(t):
+						par2.add_run(', ')
+						par2.add_run('вт')
+					if str(3) == str(t):
+						par2.add_run(', ')
+						par2.add_run('ср')
+					if str(4) == str(t):
+						par2.add_run(', ')
+						par2.add_run('чт')
+					if str(5) == str(t):
+						par2.add_run(', ')
+						par2.add_run('пт')
+					if str(6) == str(t):
+						par2.add_run(', ')
+						par2.add_run('сб')
+					if str(7) == str(t):
+						par2.add_run(', ')
+						par2.add_run('вс')
+				
+				g = len(Klist_name) + 3
+				d = len(list_date_f) + 3
+				
+				table = doc.add_table(rows = g, cols = d)
+				table.style = 'Table Grid'
+				cell = table.cell(0, 0)
+				cell.text = '№'
+				cell = table.cell(0, 1)
+				cell.text = 'Фамилия ученика'
+				j = 1
+				
+				for t in Klist_name:
+					cell = table.cell(j, 0)
+					cell.text = str(j)
+					cell = table.cell(j, 1)
+					cell.text = str(t)
+					j = j + 1
+					
+				h = 2
+				for t in list_date_f:
+					cell = table.cell(0, h)
+					cell.text = str(t[0])
+					h = h + 1
+					
+				par3 = doc.add_paragraph('                         ')
+				table1 = doc.add_table(rows = d , cols = 3)
+				table1.style = 'Table Grid'
+				cell = table1.cell(0, 0)
+				cell.text = 'Дата'
+				cell = table1.cell(0, 1)
+				cell.text = 'Тема занятий'
+				cell = table1.cell(0, 2)
+				cell.text = 'Число часов'
+				h = 1
+				sum1 = 0
+				
+				for t in list_date_f:
+					cell = table1.cell(h, 0)
+					cell.text = str(t[0])
+					cell = table1.cell(h, 1)
+					if t[4] == 1:
+						if b < len(Klist_theme):
+							cell.text = Klist_theme[b]
+						b = b + 1
+						cell = table1.cell(h, 2)
+						cell.text = str(t[3])
+						sum1 = sum1 + t[3]
+					else:
+						cell.text = t[5]
+						cell = table1.cell(h, 2)
+						cell.text = str(0)
+						sum1 = sum1 + 0
+					h = h + 1
+				
+				cell = table1.cell(d-1, 1)
+				cell.text = 'Всего часов'
+				cell = table1.cell(d-1, 2)
+				cell.text = str(sum1)
+				name_file = 'Журнал ' + month_name + ' ' + str(year) + ' ' + str(title) + '.docx'
+				doc.save(name_file)
+			k = k + 1
+		messagebox.showinfo('Важно', 'Файлы успешно сгенерерированы')
+	except:
+		messagebox.showinfo('Важно', 'Произошла ошибка при генерации файлов')
+def save_name_file():
+	global list_name
+	file_name = filedialog.askopenfilename(filetypes=(("Txt Files", "*.txt"), ("all files", "*.*")))
+	try:
+		data_name = pd.read_csv(file_name, delimiter=' ')
+		quantity_names = len(data_name["Имя"])
+		list_name = []
+		for i in range(quantity_names):
+			full_name = data_name["Фамилия"][i] + ' ' + data_name["Имя"][i]
+			list_name.append(full_name)
+		bt1.configure(text = file_name)
+		print(list_name)
+		name_files[0] = file_name
+	except:
+		messagebox.showinfo('Важно', 'Выбран неподходящий файл(файл шаблонов тоже не подходит)')
+def save_date_file():
+	global list_date
+	file_date = filedialog.askopenfilename(filetypes=(("Txt Files", "*.txt"), ("all files", "*.*")))
+	try:
+		data_date = pd.read_csv(file_date, delimiter=' ')
+		quantity_dates = len(data_date["День"])
+		list_date = []
+		for i in range(quantity_dates):
+			list_date.append([data_date["День"][i],data_date["Месяц"][i],data_date["Причина"][i]])
+			bull = pd.isna(data_date["Причина"][i])
+			print(bull)
+		bt2.configure(text = file_date)
+		print(list_date)
+		name_files[1] = file_date
+	except:
+		messagebox.showinfo('Важно', 'Выбран неподходящий файл(файл шаблонов тоже не подходит)')
+def save_theme_file():
+	global list_theme
+	global name_files
+	file_theme = filedialog.askopenfilename(filetypes=(("Txt Files", "*.txt"), ("all files", "*.*")))
+	try:
+		data_theme = pd.read_csv(file_theme, delimiter=chr(13))
+		quantity_theme = len(data_theme["Тема"])
+		list_theme = []
+		for i in range(quantity_theme):
+			list_theme.append(data_theme["Тема"][i])
+		name_files[2] = file_theme
+		bt3.configure(text = file_theme)
+		print(list_theme)
+	except:
+		messagebox.showinfo('Важно', 'Выбран неподходящий файл(файл шаблонов тоже не подходит)')
+
+
+
+def check1():
+	global name_files1
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	make_pattern.grid_remove()
+	
+	red1.grid(column=1, row=20)
+	red1.configure(bg = '#D1FF00')
+	posmb11.configure(bg = '#FF0000')
+	posmb11.grid(column=0, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[0][0])
+	screen10.configure(text = list_general_final[0][1])
+	screen20.configure(text = list_general_final[0][2])
+	screen30.configure(text = name_files1[0])
+	screen40.configure(text = name_files1[1])
+	screen50.configure(text = name_files1[2])
+	screen70.configure(text = list_general_final[0][3])
+	screen80.configure(text = list_general_final[0][7])
+	screen90.configure(text = list_general_final[0][8])
+def check2():
+	global name_files2
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	make_pattern.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	red2.configure(bg = '#D1FF00')
+	posmb11.configure(bg = '#FF0000')
+	red2.grid(column=1, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[1][0])
+	screen10.configure(text = list_general_final[1][1])
+	screen20.configure(text = list_general_final[1][2])
+	screen30.configure(text = name_files2[0])
+	screen40.configure(text = name_files2[1])
+	screen50.configure(text = name_files2[2])
+	screen70.configure(text = list_general_final[1][3])
+	screen80.configure(text = list_general_final[1][7])
+	screen90.configure(text = list_general_final[1][8])
+def check3():
+	global name_files3
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	make_pattern.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	red3.configure(bg = '#D1FF00')
+	posmb11.configure(bg = '#FF0000')
+	red3.grid(column=1, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[2][0])
+	screen10.configure(text = list_general_final[2][1])
+	screen20.configure(text = list_general_final[2][2])
+	screen30.configure(text = name_files3[0])
+	screen40.configure(text = name_files3[1])
+	screen50.configure(text = name_files3[2])
+	screen70.configure(text = list_general_final[2][3])
+	screen80.configure(text = list_general_final[2][7])
+	screen90.configure(text = list_general_final[2][8])
+def check4():
+	global name_files4
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	make_pattern.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	red4.configure(bg = '#D1FF00')
+	posmb11.configure(bg = '#FF0000')
+	red4.grid(column=1, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[3][0])
+	screen10.configure(text = list_general_final[3][1])
+	screen20.configure(text = list_general_final[3][2])
+	screen30.configure(text = name_files4[0])
+	screen40.configure(text = name_files4[1])
+	screen50.configure(text = name_files4[2])
+	screen70.configure(text = list_general_final[3][3])
+	screen80.configure(text = list_general_final[3][7])
+	screen90.configure(text = list_general_final[3][8])
+def check5():
+	global name_files5
+	
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	make_pattern.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	red5.configure(bg = '#D1FF00')
+	posmb11.configure(bg = '#FF0000')
+	red5.grid(column=1, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	
+	screen0.configure(text = list_general_final[4][0])
+	screen10.configure(text = list_general_final[4][1])
+	screen20.configure(text = list_general_final[4][2])
+	screen30.configure(text = name_files5[0])
+	screen40.configure(text = name_files5[1])
+	screen50.configure(text = name_files5[2])
+	screen70.configure(text = list_general_final[4][3])
+	screen80.configure(text = list_general_final[4][7])
+	screen90.configure(text = list_general_final[4][8])
+	
+	
+def cancel_check():
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	pock.grid(column=0, row=8)
+	butt.grid(column=3, row=0)
+	butt1.grid(column=3, row=1)
+	make_pattern.grid(column=3, row = 8)
+	
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	
+	red1.grid_remove()
+	red2.grid_remove()
+	red3.grid_remove()
+	red4.grid_remove()
+	red5.grid_remove()
+	
+	posmb11.grid_remove()
+	if len(list_general_final) >= 1:
+		posmb1.grid(column=3, row=3)
+		del1.grid(column=4, row=3)
+	if len(list_general_final) >= 2:
+		posmb2.grid(column=3, row=4)
+		del2.grid(column=4, row=4)
+	if len(list_general_final) >= 3:
+		posmb3.grid(column=3, row=5)
+		del3.grid(column=4, row=5)
+	if len(list_general_final) >= 4:
+		posmb4.grid(column=3, row=6)
+		del4.grid(column=4, row=6)
+	if len(list_general_final) >= 5:
+		posmb5.grid(column=3, row=7)
+		del5.grid(column=4, row=7)
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	pock.grid(column=0, row=8)
+	butt.grid(column=3, row=0)
+	butt1.grid(column=3, row=1)
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	if len(list_general_final) >= 1:
+		posmb1.grid(column=3, row=3)
+		del1.grid(column=4, row=3)
+	if len(list_general_final) >= 2:
+		posmb2.grid(column=3, row=4)
+		del2.grid(column=4, row=4)
+	if len(list_general_final) >= 3:
+		posmb3.grid(column=3, row=5)
+		del3.grid(column=4, row=5)
+	if len(list_general_final) >= 4:
+		posmb4.grid(column=3, row=6)
+		del4.grid(column=4, row=6)
+	if len(list_general_final) >= 5:
+		posmb5.grid(column=3, row=7)
+		del5.grid(column=4, row=7)
+
+def delet1():
+	global name_files1
+	global name_files2
+	global name_files3
+	global name_files4
+	global name_files5
+	t = 0
+	if len(list_general_final) == 1:
+		posmb1.grid_remove()
+		del1.grid_remove()
+		list_general_final.pop(t)
+		name_files1 = [0] * 3
+	if len(list_general_final) == 2:
+		posmb2.grid_remove()
+		del2.grid_remove()
+		list_general_final.pop(t)
+		name_files1 = name_files2
+		name_files2 = [0] * 3
+	if len(list_general_final) == 3:
+		posmb3.grid_remove()
+		del3.grid_remove()
+		list_general_final.pop(t)
+		name_files1 = name_files2
+		name_files2 = name_files3
+		name_files3 = [0] * 3
+	if len(list_general_final) == 4:
+		posmb4.grid_remove()
+		del4.grid_remove()
+		list_general_final.pop(t)
+		name_files1 = name_files2
+		name_files2 = name_files3
+		name_files3 = name_files4
+		name_files4 = [0] * 3
+	if len(list_general_final) == 5:
+		posmb5.grid_remove()
+		del5.grid_remove()
+		list_general_final.pop(t)
+		name_files1 = name_files2
+		name_files2 = name_files3
+		name_files3 = name_files4
+		name_files4 = name_files5
+		name_files5 = [0] * 3
+def delet2():
+	global name_files1
+	global name_files2
+	global name_files3
+	global name_files4
+	global name_files5
+	t = 1
+	if len(list_general_final) == 2:
+		posmb2.grid_remove()
+		del2.grid_remove()
+		list_general_final.pop(t)
+		name_files2 = [0] * 3
+	if len(list_general_final) == 3:
+		posmb3.grid_remove()
+		del3.grid_remove()
+		list_general_final.pop(t)
+		name_files2 = name_files3
+		name_files3 = [0] * 3
+	if len(list_general_final) == 4:
+		posmb4.grid_remove()
+		del4.grid_remove()
+		list_general_final.pop(t)
+		name_files2 = name_files3
+		name_files3 = name_files4
+		name_files4 = [0] * 3
+	if len(list_general_final) == 5:
+		posmb5.grid_remove()
+		del5.grid_remove()
+		list_general_final.pop(t)
+		name_files2 = name_files3
+		name_files3 = name_files4
+		name_files4 = name_files5
+		name_files5 = [0] * 3
+def delet3():
+	global name_files1
+	global name_files2
+	global name_files3
+	global name_files4
+	global name_files5
+	t = 2
+	if len(list_general_final) == 3:
+		posmb3.grid_remove()
+		del3.grid_remove()
+		list_general_final.pop(t)
+		name_files3 = [0] * 3
+	if len(list_general_final) == 4:
+		posmb4.grid_remove()
+		del4.grid_remove()
+		list_general_final.pop(t)
+		name_files3 = name_files4
+		name_files4 = [0] * 3
+	if len(list_general_final) == 5:
+		posmb5.grid_remove()
+		del5.grid_remove()
+		list_general_final.pop(t)
+		name_files3 = name_files4
+		name_files4 = name_files5
+		name_files5 = [0] * 3
+def delet4():
+	global name_files1
+	global name_files2
+	global name_files3
+	global name_files4
+	global name_files5
+	t = 3
+	if len(list_general_final) == 4:
+		posmb4.grid_remove()
+		del4.grid_remove()
+		list_general_final.pop(t)
+		name_files4 = [0] * 3
+	if len(list_general_final) == 5:
+		posmb5.grid_remove()
+		del5.grid_remove()
+		list_general_final.pop(t)
+		name_files4 = name_files5
+		name_files5 = [0] * 3
+def delet5():
+	global name_files1
+	global name_files2
+	global name_files3
+	global name_files4
+	global name_files5
+	t = 4
+	if len(list_general_final) == 5:
+		posmb5.grid_remove()
+		del5.grid_remove()
+		list_general_final.pop(t)
+		name_files5 = [0] * 3
+
+def redact1():
+	red1.grid_remove()
+	red_cancel1.grid(column=1, row=20)
+	red_cancel1.configure(bg = '#FF0000')
+	
+	posmb11.grid_remove()
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	
+	bt1.configure(text = name_files1[0])
+	bt2.configure(text = name_files1[1])
+	bt3.configure(text = name_files1[2])
+	
+	vvod1.delete(0,END)
+	vvod2.delete(0,END)
+	vvod3.delete(0,END)
+	vvod4.delete(0,END)
+	vvod5.delete(0,END)
+	vvod6.delete(0,END)
+	
+	vvod1.insert(0,list_general_final[0][0])
+	vvod2.insert(0,list_general_final[0][1])
+	vvod3.insert(0,list_general_final[0][2])
+	vvod4.insert(0,list_general_final[0][3])
+	vvod5.insert(0,list_general_final[0][7])
+	vvod6.insert(0,list_general_final[0][8])
+	
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+def redact_cancel1():
+	global name_files1
+	global name_files
+	global list_name
+	global list_date
+	global list_theme
+	print(name_files)
+	print(name_files1)
+	if name_files[0] == 0:
+		l = 0
+	else:
+		list_general_final[0][4] = list_name
+		name_files1[0] = name_files[0]
+	if name_files[1] == 0:
+		l = 0
+	else:
+		list_general_final[0][5] = list_date
+		name_files1[0] = name_files[0]
+	if name_files[2] == 0:
+		l = 0
+	else:
+		list_general_final[0][6] = list_theme
+		name_files1[0] = name_files[0]
+	
+	bt1.configure(text = 'Выбрать')
+	bt2.configure(text = 'Выбрать')
+	bt3.configure(text = 'Выбрать')
+	list_general_final[0][0] = vvod1.get()
+	list_general_final[0][1] = vvod2.get()
+	list_general_final[0][2] = vvod3.get()
+	list_general_final[0][3] = vvod4.get()
+	list_general_final[0][7] = (vvod5.get()).split()
+	list_general_final[0][8] = (vvod6.get()).split()
+	red_cancel1.grid_remove()
+	red1.grid(column=1, row=20)
+	posmb11.grid(column=0, row=20)
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[0][0])
+	screen10.configure(text = list_general_final[0][1])
+	screen20.configure(text = list_general_final[0][2])
+	screen30.configure(text = name_files1[0])
+	screen40.configure(text = name_files1[1])
+	screen50.configure(text = name_files1[2])
+	screen70.configure(text = list_general_final[0][3])
+	screen80.configure(text = list_general_final[0][7])
+	screen90.configure(text = list_general_final[0][8])
+
+def redact2():
+	red2.grid_remove()
+	red_cancel2.grid(column=1, row=20)
+	red_cancel2.configure(bg = '#FF0000')
+	
+	posmb11.grid_remove()
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	
+	bt1.configure(text = name_files2[0])
+	bt2.configure(text = name_files2[1])
+	bt3.configure(text = name_files2[2])
+	
+	vvod1.delete(0,END)
+	vvod2.delete(0,END)
+	vvod3.delete(0,END)
+	vvod4.delete(0,END)
+	vvod5.delete(0,END)
+	vvod6.delete(0,END)
+	
+	vvod1.insert(0,list_general_final[1][0])
+	vvod2.insert(0,list_general_final[1][1])
+	vvod3.insert(0,list_general_final[1][2])
+	vvod4.insert(0,list_general_final[1][3])
+	vvod5.insert(0,list_general_final[1][7])
+	vvod6.insert(0,list_general_final[1][8])
+	
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+def redact_cancel2():
+	global name_files3
+	global name_files
+	global list_name
+	global list_date
+	global list_theme
+	if name_files[0] == 0:
+		l = 0
+	else:
+		list_general_final[1][4] = list_name
+		name_files2[0] = name_files[0]
+	if name_files[1] == 0:
+		l = 0
+	else:
+		list_general_final[1][5] = list_date
+		name_files2[0] = name_files[0]
+	if name_files[2] == 0:
+		l = 0
+	else:
+		list_general_final[1][6] = list_theme
+		name_files2[0] = name_files[0]
+	
+	bt1.configure(text = 'Выбрать')
+	bt2.configure(text = 'Выбрать')
+	bt3.configure(text = 'Выбрать')
+	list_general_final[1][0] = vvod1.get()
+	list_general_final[1][1] = vvod2.get()
+	list_general_final[1][2] = vvod3.get()
+	list_general_final[1][3] = vvod4.get()
+	list_general_final[1][7] = (vvod5.get()).split()
+	list_general_final[1][8] = (vvod6.get()).split()
+	
+	red_cancel2.grid_remove()
+	red2.grid(column=1, row=20)
+	
+	posmb11.grid(column=0, row=20)
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	
+	screen0.configure(text = list_general_final[1][0])
+	screen10.configure(text = list_general_final[1][1])
+	screen20.configure(text = list_general_final[1][2])
+	screen30.configure(text = name_files2[0])
+	screen40.configure(text = name_files2[1])
+	screen50.configure(text = name_files2[2])
+	screen70.configure(text = list_general_final[1][3])
+	screen80.configure(text = list_general_final[1][7])
+	screen90.configure(text = list_general_final[1][8])
+
+def redact3():
+	red3.grid_remove()
+	red_cancel3.grid(column=1, row=20)
+	red_cancel3.configure(bg = '#FF0000')
+	
+	posmb11.grid_remove()
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	
+	bt1.configure(text = name_files3[0])
+	bt2.configure(text = name_files3[1])
+	bt3.configure(text = name_files3[2])
+	
+	vvod1.delete(0,END)
+	vvod2.delete(0,END)
+	vvod3.delete(0,END)
+	vvod4.delete(0,END)
+	vvod5.delete(0,END)
+	vvod6.delete(0,END)
+	
+	vvod1.insert(0,list_general_final[2][0])
+	vvod2.insert(0,list_general_final[2][1])
+	vvod3.insert(0,list_general_final[2][2])
+	vvod4.insert(0,list_general_final[2][3])
+	vvod5.insert(0,list_general_final[2][7])
+	vvod6.insert(0,list_general_final[2][8])
+	
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+def redact_cancel3():
+	global name_files3
+	global name_files
+	global list_name
+	global list_date
+	global list_theme
+	if name_files[0] == 0:
+		l = 0
+	else:
+		list_general_final[2][4] = list_name
+		name_files3[0] = name_files[0]
+	if name_files[1] == 0:
+		l = 0
+	else:
+		list_general_final[2][5] = list_date
+		name_files3[0] = name_files[0]
+	if name_files[2] == 0:
+		l = 0
+	else:
+		list_general_final[2][6] = list_theme
+		name_files3[0] = name_files[0]
+	
+	bt1.configure(text = 'Выбрать')
+	bt2.configure(text = 'Выбрать')
+	bt3.configure(text = 'Выбрать')
+	list_general_final[2][0] = vvod1.get()
+	list_general_final[2][1] = vvod2.get()
+	list_general_final[2][2] = vvod3.get()
+	list_general_final[2][3] = vvod4.get()
+	list_general_final[2][7] = (vvod5.get()).split()
+	list_general_final[2][8] = (vvod6.get()).split()
+	red_cancel3.grid_remove()
+	red3.grid(column=1, row=20)
+	posmb11.grid(column=0, row=20)
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[2][0])
+	screen10.configure(text = list_general_final[2][1])
+	screen20.configure(text = list_general_final[2][2])
+	screen30.configure(text = name_files3[0])
+	screen40.configure(text = name_files3[1])
+	screen50.configure(text = name_files3[2])
+	screen70.configure(text = list_general_final[2][3])
+	screen80.configure(text = list_general_final[2][7])
+	screen90.configure(text = list_general_final[2][8])
+
+def redact4():
+	red4.grid_remove()
+	red_cancel4.grid(column=1, row=20)
+	red_cancel4.configure(bg = '#FF0000')
+	
+	posmb11.grid_remove()
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	
+	bt1.configure(text = name_files4[0])
+	bt2.configure(text = name_files4[1])
+	bt3.configure(text = name_files4[2])
+	
+	vvod1.delete(0,END)
+	vvod2.delete(0,END)
+	vvod3.delete(0,END)
+	vvod4.delete(0,END)
+	vvod5.delete(0,END)
+	vvod6.delete(0,END)
+	
+	vvod1.insert(0,list_general_final[3][0])
+	vvod2.insert(0,list_general_final[3][1])
+	vvod3.insert(0,list_general_final[3][2])
+	vvod4.insert(0,list_general_final[3][3])
+	vvod5.insert(0,list_general_final[3][7])
+	vvod6.insert(0,list_general_final[3][8])
+	
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+def redact_cancel4():
+	global name_files4
+	global name_files
+	global list_name
+	global list_date
+	global list_theme
+	if name_files[0] == 0:
+		l = 0
+	else:
+		list_general_final[3][4] = list_name
+		name_files4[0] = name_files[0]
+	if name_files[1] == 0:
+		l = 0
+	else:
+		list_general_final[3][5] = list_date
+		name_files4[0] = name_files[0]
+	if name_files[2] == 0:
+		l = 0
+	else:
+		list_general_final[3][6] = list_theme
+		name_files4[0] = name_files[0]
+	
+	bt1.configure(text = 'Выбрать')
+	bt2.configure(text = 'Выбрать')
+	bt3.configure(text = 'Выбрать')
+	list_general_final[3][0] = vvod1.get()
+	list_general_final[3][1] = vvod2.get()
+	list_general_final[3][2] = vvod3.get()
+	list_general_final[3][3] = vvod4.get()
+	list_general_final[3][7] = (vvod5.get()).split()
+	list_general_final[3][8] = (vvod6.get()).split()
+	
+	red_cancel4.grid_remove()
+	red4.grid(column=1, row=20)
+	
+	posmb11.grid(column=0, row=20)
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[3][0])
+	screen10.configure(text = list_general_final[3][1])
+	screen20.configure(text = list_general_final[3][2])
+	screen30.configure(text = name_files4[0])
+	screen40.configure(text = name_files4[1])
+	screen50.configure(text = name_files4[2])
+	screen70.configure(text = list_general_final[3][3])
+	screen80.configure(text = list_general_final[3][7])
+	screen90.configure(text = list_general_final[3][8])
+
+def redact5():
+	red5.grid_remove()
+	red_cancel5.grid(column=1, row=20)
+	red_cancel5.configure(bg = '#FF0000')
+	
+	posmb11.grid_remove()
+	screen0.grid_remove()
+	screen10.grid_remove()
+	screen20.grid_remove()
+	screen30.grid_remove()
+	screen40.grid_remove()
+	screen50.grid_remove()
+	screen70.grid_remove()
+	screen80.grid_remove()
+	screen90.grid_remove()
+	
+	bt1.grid(column=1, row=3)
+	bt2.grid(column=1, row=4)
+	bt3.grid(column=1, row=5)
+	
+	bt1.configure(text = name_files5[0])
+	bt2.configure(text = name_files5[1])
+	bt3.configure(text = name_files5[2])
+	
+	vvod1.delete(0,END)
+	vvod2.delete(0,END)
+	vvod3.delete(0,END)
+	vvod4.delete(0,END)
+	vvod5.delete(0,END)
+	vvod6.delete(0,END)
+	
+	vvod1.insert(0,list_general_final[4][0])
+	vvod2.insert(0,list_general_final[4][1])
+	vvod3.insert(0,list_general_final[4][2])
+	vvod4.insert(0,list_general_final[4][3])
+	vvod5.insert(0,list_general_final[4][7])
+	vvod6.insert(0,list_general_final[4][8])
+	
+	vvod1.grid(column=1, row=0)
+	vvod2.grid(column=1, row=1)
+	vvod3.grid(column=1, row=2)
+	vvod4.grid(column=1, row=6)
+	vvod5.grid(column=1, row=7)
+	vvod6.grid(column=1, row=8)
+def redact_cancel5():
+	global name_files5
+	global name_files
+	global list_name
+	global list_date
+	global list_theme
+	if name_files[0] == 0:
+		l = 0
+	else:
+		list_general_final[4][4] = list_name
+		name_files5[0] = name_files[0]
+	if name_files[1] == 0:
+		l = 0
+	else:
+		list_general_final[4][5] = list_date
+		name_files5[0] = name_files[0]
+	if name_files[2] == 0:
+		l = 0
+	else:
+		list_general_final[4][6] = list_theme
+		name_files5[0] = name_files[0]
+	
+	bt1.configure(text = 'Выбрать')
+	bt2.configure(text = 'Выбрать')
+	bt3.configure(text = 'Выбрать')
+	list_general_final[4][0] = vvod1.get()
+	list_general_final[4][1] = vvod2.get()
+	list_general_final[4][2] = vvod3.get()
+	list_general_final[4][3] = vvod4.get()
+	list_general_final[4][7] = (vvod5.get()).split()
+	list_general_final[4][8] = (vvod6.get()).split()
+	red_cancel5.grid_remove()
+	red5.grid(column=1, row=20)
+	posmb11.grid(column=0, row=20)
+	vvod1.grid_remove()
+	vvod2.grid_remove()
+	vvod3.grid_remove()
+	vvod4.grid_remove()
+	vvod5.grid_remove()
+	vvod6.grid_remove()
+	bt1.grid_remove()
+	bt2.grid_remove()
+	bt3.grid_remove()
+	butt.grid_remove()
+	butt1.grid_remove()
+	posmb1.grid_remove()
+	posmb2.grid_remove()
+	posmb3.grid_remove()
+	posmb4.grid_remove()
+	posmb5.grid_remove()
+	del1.grid_remove()
+	del2.grid_remove()
+	del3.grid_remove()
+	del4.grid_remove()
+	del5.grid_remove()
+	
+	posmb11.grid(column=0, row=20)
+	
+	screen0.grid(column=1, row=0)
+	screen10.grid(column=1, row=1)
+	screen20.grid(column=1, row=2)
+	screen30.grid(column=1, row=3)
+	screen40.grid(column=1, row=4)
+	screen50.grid(column=1, row=5)
+	screen70.grid(column=1, row=6)
+	screen80.grid(column=1, row=7)
+	screen90.grid(column=1, row=8)
+	screen0.configure(text = list_general_final[4][0])
+	screen10.configure(text = list_general_final[4][1])
+	screen20.configure(text = list_general_final[4][2])
+	screen30.configure(text = name_files5[0])
+	screen40.configure(text = name_files5[1])
+	screen50.configure(text = name_files5[2])
+	screen70.configure(text = list_general_final[4][3])
+	screen80.configure(text = list_general_final[4][7])
+	screen90.configure(text = list_general_final[4][8])
+
+def make_pattern_function():
+	try:
+		doc = docx.Document()	
+		par0 = doc.add_paragraph('На компьютере в папке с программой появились файлы с названиями ШаблонИмени.txt, ШаблонДат.txt, ШаблонТем.txt.')
+		par1 = doc.add_paragraph('Откройте эти файлы, шаблоны можно открыть в блокноте.')
+		par2 = doc.add_paragraph('ШаблонИмени.txt – напишите здесь Фамилии и Имена детей, посещающих кружок')
+		p = par2.paragraph_format
+		p.left_indent = Mm(30)
+		par3 = doc.add_paragraph('ШаблонДат.txt – укажите здесь даты, когда занятия отменяются по тем или иным причинам (Государственные праздники, каникулы, командировки или больничные)')
+		p = par3.paragraph_format
+		p.left_indent = Mm(30)
+		par4 = doc.add_paragraph('ШаблонТем.txt – Укажите здесь темы заданий как в календарно-тематическом планировании.')
+		p = par4.paragraph_format
+		p.left_indent = Mm(30)
+		par5 = doc.add_paragraph('ВАЖНО!')
+		par5 = doc.add_paragraph('При работе в программе важно чтобы совпало количество дней, когда проводится кружок и количество часов в каждом из дней (Например 2 5, 2 1 – Кружок по вторникам и пятницам по 2 часа и 1 часу соответственно.)')
+		par6 = doc.add_paragraph('Шаблоны не могут использоваться как готовые файлы, поэтому при использовании их в тестирование, нужно скопировать их содержание и записать в новый файл с форматом  .txt')
+		
+		
+		doc.save('Инструкция.docx')
+		
+		f = open('ШаблонИмени.txt','w')
+		f.write('Фамилия Имя' + '\n' + 'Кобельков Иван' + '\n' + 'Петров Илья' + '\n' + 'Вансович Яков' + '\n' + 'Герасиков Владимир'  + '\n')
+		f.close()
+		
+		f = open('ШаблонДат.txt','w')
+		f.write('День Месяц Причина ' + '\n' + '1 9 Каникулы' + '\n' + '3 5 Командировка' + '\n' + '9 5 Праздник' + '\n' + '1 1 НовыйГод'  + '\n')
+		f.close()
+				
+		f = open('ШаблонТем.txt','w')
+		f.write('Тема' + '\n' + 'Интеграция интелграла' + '\n' + 'Производная производной' + '\n' + 'Кол для каждого' + '\n' + 'Разбор контрольной работы' + '\n')
+		f.close()
+		
+		messagebox.showinfo('Важно', 'Инструкция успешно скачана')
+	except:
+		messagebox.showinfo('Инструкция не была скачана', 'Проверьте не открыты ли у вас файлы с названием Инструкция.docx,ШаблонИмени.txt,ШаблонДат.txt,ШаблонТем.txt')
+	
+import pandas as pd
+
+import numpy as np
+
+from tkinter import *
+from tkinter import filedialog
+from tkinter import Menu
+from tkinter.ttk import Combobox
+from tkinter import messagebox
+from docx.shared import Mm
+
+import docx
+
+list_general = []
+list_general_final = []
+
+name_files = [0] * 3
+
+name_files1 = [0] * 3
+name_files2 = [0] * 3
+name_files3 = [0] * 3
+name_files4 = [0] * 3
+name_files5 = [0] * 3
+list_name = []
+list_data = []
+list_theme = []
+
+final_date = [[1,4,9,2022],[2,5,9,2022],[3,6,9,2022],[4,7,9,2022],[5,1,9,2022],[6,2,9,2022],[7,3,9,2022],[8,4,9,2022],[9,5,9,2022],[10,6,9,2022],[11,7,9,2022],[12,1,9,2022],[13,2,9,2022],[14,3,9,2022],[15,4,9,2022],[16,5,9,2022],[17,6,9,2022],[18,7,9,2022],[19,1,9,2022],[20,2,9,2022],[21,3,9,2022],[22,4,9,2022],[23,5,9,2022],[24,6,9,2022],[25,7,9,2022],[26,1,9,2022],[27,2,9,2022],[28,3,9,2022],[29,4,9,2022],[30,5,9,2022],[1,6,10,2022],[2,7,10,2022],[3,1,10,2022],[4,2,10,2022],[5,3,10,2022],[6,4,10,2022],[7,5,10,2022],[8,6,10,2022],[9,7,10,2022],[10,1,10,2022],[11,2,10,2022],[12,3,10,2022],[13,4,10,2022],[14,5,10,2022],[15,6,10,2022],[16,7,10,2022],[17,1,10,2022],[18,2,10,2022],[19,3,10,2022],[20,4,10,2022],[21,5,10,2022],[22,6,10,2022],[23,7,10,2022],[24,1,10,2022],[25,2,10,2022],[26,3,10,2022],[27,4,10,2022],[28,5,10,2022],[29,6,10,2022],[30,7,10,2022],[31,1,10,2022],[1,2,11,2022],[2,3,11,2022],[3,4,11,2022],[4,5,11,2022],[5,6,11,2022],[6,7,11,2022],[7,1,11,2022],[8,2,11,2022],[9,3,11,2022],[10,4,11,2022],[11,5,11,2022],[12,6,11,2022],[13,7,11,2022],[14,1,11,2022],[15,2,11,2022],[16,3,11,2022],[17,4,11,2022],[18,5,11,2022],[19,6,11,2022],[20,7,11,2022],[21,1,11,2022],[22,2,11,2022],[23,3,11,2022],[24,4,11,2022],[25,5,11,2022],[26,6,11,2022],[27,7,11,2022],[28,1,11,2022],[29,2,11,2022],[30,3,11,2022],[1,4,12,2022],[2,5,12,2022],[3,6,12,2022],[4,7,12,2022],[5,1,12,2022],[6,2,12,2022],[7,3,12,2022],[8,4,12,2022],[9,5,12,2022],[10,6,12,2022],[11,7,12,2022],[12,1,12,2022],[13,2,12,2022],[14,3,12,2022],[15,4,12,2022],[16,5,12,2022],[17,6,12,2022],[18,7,12,2022],[19,1,12,2022],[20,2,12,2022],[21,3,12,2022],[22,4,12,2022],[23,5,12,2022],[24,6,12,2022],[25,7,12,2022],[26,1,12,2022],[27,2,12,2022],[28,3,12,2022],[29,4,12,2022],[30,5,12,2022],[31,6,12,2022],
+				[1,7,1,2023],[2,1,1,2023],[3,2,1,2023],[4,3,1,2023],[5,4,1,2023],[6,5,1,2023],[7,6,1,2023],[8,7,1,2023],[9,1,1,2023],[10,2,1,2023],[11,3,1,2023],[12,4,1,2023],[13,5,1,2023],[14,6,1,2023],[15,7,1,2023],[16,1,1,2023],[17,2,1,2023],[18,3,1,2023],[19,4,1,2023],[20,5,1,2023],[21,6,1,2023],[22,7,1,2023],[23,1,1,2023],[24,2,1,2023],[25,3,1,2023],[26,4,1,2023],[27,5,1,2023],[28,6,1,2023],[29,7,1,2023],[30,1,1,2023],[31,2,1,2023],[1,3,2,2023],[2,4,2,2023],[3,5,2,2023],[4,6,2,2023],[5,7,2,2023],[6,1,2,2023],[7,2,2,2023],[8,3,2,2023],[9,4,2,2023],[10,5,2,2023],[11,6,2,2023],[12,7,2,2023],[13,1,2,2023],[14,2,2,2023],[15,3,2,2023],[16,4,2,2023],[17,5,2,2023],[18,6,2,2023],[19,7,2,2023],[20,1,2,2023],[21,2,2,2023],[22,3,2,2023],[23,4,2,2023],[24,5,2,2023],[25,6,2,2023],[26,7,2,2023],[27,1,2,2023],[28,2,2,2023],[1,3,3,2023],[2,4,3,2023],[3,5,3,2023],[4,6,3,2023],[5,7,3,2023],[6,1,3,2023],[7,2,3,2023],[8,3,3,2023],[9,4,3,2023],[10,5,3,2023],[11,6,3,2023],[12,7,3,2023],[13,1,3,2023],[14,2,3,2023],[15,3,3,2023],[16,4,3,2023],[17,5,3,2023],[18,6,3,2023],[19,7,3,2023],[20,1,3,2023],[21,2,3,2023],[22,3,3,2023],[23,4,3,2023],[24,5,3,2023],[25,6,3,2023],[26,7,3,2023],[27,1,3,2023],[28,2,3,2023],[29,3,3,2023],[30,4,3,2023],[31,5,3,2023],[1,6,4,2023],[2,7,4,2023],[3,1,4,2023],[4,2,4,2023],[5,3,4,2023],[6,4,4,2023],[7,5,4,2023],[8,6,4,2023],[9,7,4,2023],[10,1,4,2023],[11,2,4,2023],[12,3,4,2023],[13,4,4,2023],[14,5,4,2023],[15,6,4,2023],[16,7,4,2023],[17,1,4,2023],[18,2,4,2023],[19,3,4,2023],[20,4,4,2023],[21,5,4,2023],[22,6,4,2023],[23,7,4,2023],[24,1,4,2023],[25,2,4,2023],[26,3,4,2023],[27,4,4,2023],[28,5,4,2023],[29,6,4,2023],[30,7,4,2023],[1,1,5,2023],[2,2,5,2023],[3,3,5,2023],[4,4,5,2023],[5,5,5,2023],[6,6,5,2023],[7,7,5,2023],[8,1,5,2023],[9,2,5,2023],[10,3,5,2023],[11,4,5,2023],[12,5,5,2023],[13,6,5,2023],[14,7,5,2023],[15,1,5,2023],[16,2,5,2023],[17,3,5,2023],[18,4,5,2023],[19,5,5,2023],[20,6,5,2023],[21,7,5,2023],[22,1,5,2023],[23,2,5,2023],[24,3,5,2023],[25,4,5,2023],[26,5,5,2023],[27,6,5,2023],[28,7,5,2023],[29,1,5,2023],[30,2,5,2023],[31,3,5,2023],[1,4,6,2023],[2,5,6,2023],[3,6,6,2023],[4,7,6,2023],[5,1,6,2023],[6,2,6,2023],[7,3,6,2023],[8,4,6,2023],[9,5,6,2023],[10,6,6,2023],[11,7,6,2023],[12,1,6,2023],[13,2,6,2023],[14,3,6,2023],[15,4,6,2023],[16,5,6,2023],[17,6,6,2023],[18,7,6,2023],[19,1,6,2023],[20,2,6,2023],[21,3,6,2023],[22,4,6,2023],[23,5,6,2023],[24,6,6,2023],[25,7,6,2023],[26,1,6,2023],[27,2,6,2023],[28,3,6,2023],[29,4,6,2023],[30,5,6,2023],[1,6,7,2023],[2,7,7,2023],[3,1,7,2023],[4,2,7,2023],[5,3,7,2023],[6,4,7,2023],[7,5,7,2023],[8,6,7,2023],[9,7,7,2023],[10,1,7,2023],[11,2,7,2023],[12,3,7,2023],[13,4,7,2023],[14,5,7,2023],[15,6,7,2023],[16,7,7,2023],[17,1,7,2023],[18,2,7,2023],[19,3,7,2023],[20,4,7,2023],[21,5,7,2023],[22,6,7,2023],[23,7,7,2023],[24,1,7,2023],[25,2,7,2023],[26,3,7,2023],[27,4,7,2023],[28,5,7,2023],[29,6,7,2023],[30,7,7,2023],[31,1,7,2023],[1,2,8,2023],[2,3,8,2023],[3,4,8,2023],[4,5,8,2023],[5,6,8,2023],[6,7,8,2023],[7,1,8,2023],[8,2,8,2023],[9,3,8,2023],[10,4,8,2023],[11,5,8,2023],[12,6,8,2023],[13,7,8,2023],[14,1,8,2023],[15,2,8,2023],[16,3,8,2023],[17,4,8,2023],[18,5,8,2023],[19,6,8,2023],[20,7,8,2023],[21,1,8,2023],[22,2,8,2023],[23,3,8,2023],[24,4,8,2023],[25,5,8,2023],[26,6,8,2023],[27,7,8,2023],[28,1,8,2023],[29,2,8,2023],[30,3,8,2023],[31,4,8,2023],[1,5,9,2023],[2,6,9,2023],[3,7,9,2023],[4,1,9,2023],[5,2,9,2023],[6,3,9,2023],[7,4,9,2023],[8,5,9,2023],[9,6,9,2023],[10,7,9,2023],[11,1,9,2023],[12,2,9,2023],[13,3,9,2023],[14,4,9,2023],[15,5,9,2023],[16,6,9,2023],[17,7,9,2023],[18,1,9,2023],[19,2,9,2023],[20,3,9,2023],[21,4,9,2023],[22,5,9,2023],[23,6,9,2023],[24,7,9,2023],[25,1,9,2023],[26,2,9,2023],[27,3,9,2023],[28,4,9,2023],[29,5,9,2023],[30,6,9,2023],[1,7,10,2023],[2,1,10,2023],[3,2,10,2023],[4,3,10,2023],[5,4,10,2023],[6,5,10,2023],[7,6,10,2023],[8,7,10,2023],[9,1,10,2023],[10,2,10,2023],[11,3,10,2023],[12,4,10,2023],[13,5,10,2023],[14,6,10,2023],[15,7,10,2023],[16,1,10,2023],[17,2,10,2023],[18,3,10,2023],[19,4,10,2023],[20,5,10,2023],[21,6,10,2023],[22,7,10,2023],[23,1,10,2023],[24,2,10,2023],[25,3,10,2023],[26,4,10,2023],[27,5,10,2023],[28,6,10,2023],[29,7,10,2023],[30,1,10,2023],[31,2,10,2023],[1,3,11,2023],[2,4,11,2023],[3,5,11,2023],[4,6,11,2023],[5,7,11,2023],[6,1,11,2023],[7,2,11,2023],[8,3,11,2023],[9,4,11,2023],[10,5,11,2023],[11,6,11,2023],[12,7,11,2023],[13,1,11,2023],[14,2,11,2023],[15,3,11,2023],[16,4,11,2023],[17,5,11,2023],[18,6,11,2023],[19,7,11,2023],[20,1,11,2023],[21,2,11,2023],[22,3,11,2023],[23,4,11,2023],[24,5,11,2023],[25,6,11,2023],[26,7,11,2023],[27,1,11,2023],[28,2,11,2023],[29,3,11,2023],[30,4,11,2023],[1,5,12,2023],[2,6,12,2023],[3,7,12,2023],[4,1,12,2023],[5,2,12,2023],[6,3,12,2023],[7,4,12,2023],[8,5,12,2023],[9,6,12,2023],[10,7,12,2023],[11,1,12,2023],[12,2,12,2023],[13,3,12,2023],[14,4,12,2023],[15,5,12,2023],[16,6,12,2023],[17,7,12,2023],[18,1,12,2023],[19,2,12,2023],[20,3,12,2023],[21,4,12,2023],[22,5,12,2023],[23,6,12,2023],[24,7,12,2023],[25,1,12,2023],[26,2,12,2023],[27,3,12,2023],[28,4,12,2023],[29,5,12,2023],[30,6,12,2023],[31,7,12,2023],[1,1,1,2024],[2,2,1,2024],[3,3,1,2024],[4,4,1,2024],[5,5,1,2024],[6,6,1,2024],[7,7,1,2024],[8,1,1,2024],[9,2,1,2024],[10,3,1,2024],[11,4,1,2024],[12,5,1,2024],[13,6,1,2024],[14,7,1,2024],[15,1,1,2024],[16,2,1,2024],[17,3,1,2024],[18,4,1,2024],[19,5,1,2024],[20,6,1,2024],[21,7,1,2024],[22,1,1,2024],[23,2,1,2024],[24,3,1,2024],[25,4,1,2024],[26,5,1,2024],[27,6,1,2024],[28,7,1,2024],[29,1,1,2024],[30,2,1,2024],[31,3,1,2024],[1,4,2,2024],[2,5,2,2024],[3,6,2,2024],[4,7,2,2024],[5,1,2,2024],[6,2,2,2024],[7,3,2,2024],[8,4,2,2024],[9,5,2,2024],[10,6,2,2024],[11,7,2,2024],[12,1,2,2024],[13,2,2,2024],[14,3,2,2024],[15,4,2,2024],[16,5,2,2024],[17,6,2,2024],[18,7,2,2024],[19,1,2,2024],[20,2,2,2024],[21,3,2,2024],[22,4,2,2024],[23,5,2,2024],[24,6,2,2024],[25,7,2,2024],[26,1,2,2024],[27,2,2,2024],[28,3,2,2024],[29,4,2,2024],[1,5,3,2024],[2,6,3,2024],[3,7,3,2024],[4,1,3,2024],[5,2,3,2024],[6,3,3,2024],[7,4,3,2024],[8,5,3,2024],[9,6,3,2024],[10,7,3,2024],[11,1,3,2024],[12,2,3,2024],[13,3,3,2024],[14,4,3,2024],[15,5,3,2024],[16,6,3,2024],[17,7,3,2024],[18,1,3,2024],[19,2,3,2024],[20,3,3,2024],[21,4,3,2024],[22,5,3,2024],[23,6,3,2024],[24,7,3,2024],[25,1,3,2024],[26,2,3,2024],[27,3,3,2024],[28,4,3,2024],[29,5,3,2024],[30,6,3,2024],[31,7,3,2024],[1,1,4,2024],[2,2,4,2024],[3,3,4,2024],[4,4,4,2024],[5,5,4,2024],[6,6,4,2024],[7,7,4,2024],[8,1,4,2024],[9,2,4,2024],[10,3,4,2024],[11,4,4,2024],[12,5,4,2024],[13,6,4,2024],[14,7,4,2024],[15,1,4,2024],[16,2,4,2024],[17,3,4,2024],[18,4,4,2024],[19,5,4,2024],[20,6,4,2024],[21,7,4,2024],[22,1,4,2024],[23,2,4,2024],[24,3,4,2024],[25,4,4,2024],[26,5,4,2024],[27,6,4,2024],[28,7,4,2024],[29,1,4,2024],[30,2,4,2024],[1,3,5,2024],[2,4,5,2024],[3,5,5,2024],[4,6,5,2024],[5,7,5,2024],[6,1,5,2024],[7,2,5,2024],[8,3,5,2024],[9,4,5,2024],[10,5,5,2024],[11,6,5,2024],[12,7,5,2024],[13,1,5,2024],[14,2,5,2024],[15,3,5,2024],[16,4,5,2024],[17,5,5,2024],[18,6,5,2024],[19,7,5,2024],[20,1,5,2024],[21,2,5,2024],[22,3,5,2024],[23,4,5,2024],[24,5,5,2024],[25,6,5,2024],[26,7,5,2024],[27,1,5,2024],[28,2,5,2024],[29,3,5,2024],[30,4,5,2024],[31,5,5,2024],[1,6,6,2024],[2,7,6,2024],[3,1,6,2024],[4,2,6,2024],[5,3,6,2024],[6,4,6,2024],[7,5,6,2024],[8,6,6,2024],[9,7,6,2024],[10,1,6,2024],[11,2,6,2024],[12,3,6,2024],[13,4,6,2024],[14,5,6,2024],[15,6,6,2024],[16,7,6,2024],[17,1,6,2024],[18,2,6,2024],[19,3,6,2024],[20,4,6,2024],[21,5,6,2024],[22,6,6,2024],[23,7,6,2024],[24,1,6,2024],[25,2,6,2024],[26,3,6,2024],[27,4,6,2024],[28,5,6,2024],[29,6,6,2024],[30,7,6,2024],[1,1,7,2024],[2,2,7,2024],[3,3,7,2024],[4,4,7,2024],[5,5,7,2024],[6,6,7,2024],[7,7,7,2024],[8,1,7,2024],[9,2,7,2024],[10,3,7,2024],[11,4,7,2024],[12,5,7,2024],[13,6,7,2024],[14,7,7,2024],[15,1,7,2024],[16,2,7,2024],[17,3,7,2024],[18,4,7,2024],[19,5,7,2024],[20,6,7,2024],[21,7,7,2024],[22,1,7,2024],[23,2,7,2024],[24,3,7,2024],[25,4,7,2024],[26,5,7,2024],[27,6,7,2024],[28,7,7,2024],[29,1,7,2024],[30,2,7,2024],[31,3,7,2024],[1,4,8,2024],[2,5,8,2024],[3,6,8,2024],[4,7,8,2024],[5,1,8,2024],[6,2,8,2024],[7,3,8,2024],[8,4,8,2024],[9,5,8,2024],[10,6,8,2024],[11,7,8,2024],[12,1,8,2024],[13,2,8,2024],[14,3,8,2024],[15,4,8,2024],[16,5,8,2024],[17,6,8,2024],[18,7,8,2024],[19,1,8,2024],[20,2,8,2024],[21,3,8,2024],[22,4,8,2024],[23,5,8,2024],[24,6,8,2024],[25,7,8,2024],[26,1,8,2024],[27,2,8,2024],[28,3,8,2024],[29,4,8,2024],[30,5,8,2024],[31,6,8,2024],[1,7,9,2024],[2,1,9,2024],[3,2,9,2024],[4,3,9,2024],[5,4,9,2024],[6,5,9,2024],[7,6,9,2024],[8,7,9,2024],[9,1,9,2024],[10,2,9,2024],[11,3,9,2024],[12,4,9,2024],[13,5,9,2024],[14,6,9,2024],[15,7,9,2024],[16,1,9,2024],[17,2,9,2024],[18,3,9,2024],[19,4,9,2024],[20,5,9,2024],[21,6,9,2024],[22,7,9,2024],[23,1,9,2024],[24,2,9,2024],[25,3,9,2024],[26,4,9,2024],[27,5,9,2024],[28,6,9,2024],[29,7,9,2024],[30,1,9,2024],[1,2,10,2024],[2,3,10,2024],[3,4,10,2024],[4,5,10,2024],[5,6,10,2024],[6,7,10,2024],[7,1,10,2024],[8,2,10,2024],[9,3,10,2024],[10,4,10,2024],[11,5,10,2024],[12,6,10,2024],[13,7,10,2024],[14,1,10,2024],[15,2,10,2024],[16,3,10,2024],[17,4,10,2024],[18,5,10,2024],[19,6,10,2024],[20,7,10,2024],[21,1,10,2024],[22,2,10,2024],[23,3,10,2024],[24,4,10,2024],[25,5,10,2024],[26,6,10,2024],[27,7,10,2024],[28,1,10,2024],[29,2,10,2024],[30,3,10,2024],[31,4,10,2024],[1,5,11,2024],[2,6,11,2024],[3,7,11,2024],[4,1,11,2024],[5,2,11,2024],[6,3,11,2024],[7,4,11,2024],[8,5,11,2024],[9,6,11,2024],[10,7,11,2024],[11,1,11,2024],[12,2,11,2024],[13,3,11,2024],[14,4,11,2024],[15,5,11,2024],[16,6,11,2024],[17,7,11,2024],[18,1,11,2024],[19,2,11,2024],[20,3,11,2024],[21,4,11,2024],[22,5,11,2024],[23,6,11,2024],[24,7,11,2024],[25,1,11,2024],[26,2,11,2024],[27,3,11,2024],[28,4,11,2024],[29,5,11,2024],[30,6,11,2024],[1,7,12,2024],[2,1,12,2024],[3,2,12,2024],[4,3,12,2024],[5,4,12,2024],[6,5,12,2024],[7,6,12,2024],[8,7,12,2024],[9,1,12,2024],[10,2,12,2024],[11,3,12,2024],[12,4,12,2024],[13,5,12,2024],[14,6,12,2024],[15,7,12,2024],[16,1,12,2024],[17,2,12,2024],[18,3,12,2024],[19,4,12,2024],[20,5,12,2024],[21,6,12,2024],[22,7,12,2024],[23,1,12,2024],[24,2,12,2024],[25,3,12,2024],[26,4,12,2024],[27,5,12,2024],[28,6,12,2024],[29,7,12,2024],[30,1,12,2024],[31,2,12,2024],[1,3,1,2025],[2,4,1,2025],[3,5,1,2025],[4,6,1,2025],[5,7,1,2025],[6,1,1,2025],[7,2,1,2025],[8,3,1,2025],[9,4,1,2025],[10,5,1,2025],[11,6,1,2025],[12,7,1,2025],[13,1,1,2025],[14,2,1,2025],[15,3,1,2025],[16,4,1,2025],[17,5,1,2025],[18,6,1,2025],[19,7,1,2025],[20,1,1,2025],[21,2,1,2025],[22,3,1,2025],[23,4,1,2025],[24,5,1,2025],[25,6,1,2025],[26,7,1,2025],[27,1,1,2025],[28,2,1,2025],[29,3,1,2025],[30,4,1,2025],[31,5,1,2025],[1,6,2,2025],[2,7,2,2025],[3,1,2,2025],[4,2,2,2025],[5,3,2,2025],[6,4,2,2025],[7,5,2,2025],[8,6,2,2025],[9,7,2,2025],[10,1,2,2025],[11,2,2,2025],[12,3,2,2025],[13,4,2,2025],[14,5,2,2025],[15,6,2,2025],[16,7,2,2025],[17,1,2,2025],[18,2,2,2025],[19,3,2,2025],[20,4,2,2025],[21,5,2,2025],[22,6,2,2025],[23,7,2,2025],[24,1,2,2025],[25,2,2,2025],[26,3,2,2025],[27,4,2,2025],[28,5,2,2025],[1,6,3,2025],[2,7,3,2025],[3,1,3,2025],[4,2,3,2025],[5,3,3,2025],[6,4,3,2025],[7,5,3,2025],[8,6,3,2025],[9,7,3,2025],[10,1,3,2025],[11,2,3,2025],[12,3,3,2025],[13,4,3,2025],[14,5,3,2025],[15,6,3,2025],[16,7,3,2025],[17,1,3,2025],[18,2,3,2025],[19,3,3,2025],[20,4,3,2025],[21,5,3,2025],[22,6,3,2025],[23,7,3,2025],[24,1,3,2025],[25,2,3,2025],[26,3,3,2025],[27,4,3,2025],[28,5,3,2025],[29,6,3,2025],[30,7,3,2025],[31,1,3,2025],[1,2,4,2025],[2,3,4,2025],[3,4,4,2025],[4,5,4,2025],[5,6,4,2025],[6,7,4,2025],[7,1,4,2025],[8,2,4,2025],[9,3,4,2025],[10,4,4,2025],[11,5,4,2025],[12,6,4,2025],[13,7,4,2025],[14,1,4,2025],[15,2,4,2025],[16,3,4,2025],[17,4,4,2025],[18,5,4,2025],[19,6,4,2025],[20,7,4,2025],[21,1,4,2025],[22,2,4,2025],[23,3,4,2025],[24,4,4,2025],[25,5,4,2025],[26,6,4,2025],[27,7,4,2025],[28,1,4,2025],[29,2,4,2025],[30,3,4,2025],[1,4,5,2025],[2,5,5,2025],[3,6,5,2025],[4,7,5,2025],[5,1,5,2025],[6,2,5,2025],[7,3,5,2025],[8,4,5,2025],[9,5,5,2025],[10,6,5,2025],[11,7,5,2025],[12,1,5,2025],[13,2,5,2025],[14,3,5,2025],[15,4,5,2025],[16,5,5,2025],[17,6,5,2025],[18,7,5,2025],[19,1,5,2025],[20,2,5,2025],[21,3,5,2025],[22,4,5,2025],[23,5,5,2025],[24,6,5,2025],[25,7,5,2025],[26,1,5,2025],[27,2,5,2025],[28,3,5,2025],[29,4,5,2025],[30,5,5,2025],[31,6,5,2025],[1,7,6,2025],[2,1,6,2025],[3,2,6,2025],[4,3,6,2025],[5,4,6,2025],[6,5,6,2025],[7,6,6,2025],[8,7,6,2025],[9,1,6,2025],[10,2,6,2025],[11,3,6,2025],[12,4,6,2025],[13,5,6,2025],[14,6,6,2025],[15,7,6,2025],[16,1,6,2025],[17,2,6,2025],[18,3,6,2025],[19,4,6,2025],[20,5,6,2025],[21,6,6,2025],[22,7,6,2025],[23,1,6,2025],[24,2,6,2025],[25,3,6,2025],[26,4,6,2025],[27,5,6,2025],[28,6,6,2025],[29,7,6,2025],[30,1,6,2025],[1,2,7,2025],[2,3,7,2025],[3,4,7,2025],[4,5,7,2025],[5,6,7,2025],[6,7,7,2025],[7,1,7,2025],[8,2,7,2025],[9,3,7,2025],[10,4,7,2025],[11,5,7,2025],[12,6,7,2025],[13,7,7,2025],[14,1,7,2025],[15,2,7,2025],[16,3,7,2025],[17,4,7,2025],[18,5,7,2025],[19,6,7,2025],[20,7,7,2025],[21,1,7,2025],[22,2,7,2025],[23,3,7,2025],[24,4,7,2025],[25,5,7,2025],[26,6,7,2025],[27,7,7,2025],[28,1,7,2025],[29,2,7,2025],[30,3,7,2025],[31,4,7,2025],[1,5,8,2025],[2,6,8,2025],[3,7,8,2025],[4,1,8,2025],[5,2,8,2025],[6,3,8,2025],[7,4,8,2025],[8,5,8,2025],[9,6,8,2025],[10,7,8,2025],[11,1,8,2025],[12,2,8,2025],[13,3,8,2025],[14,4,8,2025],[15,5,8,2025],[16,6,8,2025],[17,7,8,2025],[18,1,8,2025],[19,2,8,2025],[20,3,8,2025],[21,4,8,2025],[22,5,8,2025],[23,6,8,2025],[24,7,8,2025],[25,1,8,2025],[26,2,8,2025],[27,3,8,2025],[28,4,8,2025],[29,5,8,2025],[30,6,8,2025],[31,7,8,2025],[1,1,9,2025],[2,2,9,2025],[3,3,9,2025],[4,4,9,2025],[5,5,9,2025],[6,6,9,2025],[7,7,9,2025],[8,1,9,2025],[9,2,9,2025],[10,3,9,2025],[11,4,9,2025],[12,5,9,2025],[13,6,9,2025],[14,7,9,2025],[15,1,9,2025],[16,2,9,2025],[17,3,9,2025],[18,4,9,2025],[19,5,9,2025],[20,6,9,2025],[21,7,9,2025],[22,1,9,2025],[23,2,9,2025],[24,3,9,2025],[25,4,9,2025],[26,5,9,2025],[27,6,9,2025],[28,7,9,2025],[29,1,9,2025],[30,2,9,2025],[1,3,10,2025],[2,4,10,2025],[3,5,10,2025],[4,6,10,2025],[5,7,10,2025],[6,1,10,2025],[7,2,10,2025],[8,3,10,2025],[9,4,10,2025],[10,5,10,2025],[11,6,10,2025],[12,7,10,2025],[13,1,10,2025],[14,2,10,2025],[15,3,10,2025],[16,4,10,2025],[17,5,10,2025],[18,6,10,2025],[19,7,10,2025],[20,1,10,2025],[21,2,10,2025],[22,3,10,2025],[23,4,10,2025],[24,5,10,2025],[25,6,10,2025],[26,7,10,2025],[27,1,10,2025],[28,2,10,2025],[29,3,10,2025],[30,4,10,2025],[31,5,10,2025],[1,6,11,2025],[2,7,11,2025],[3,1,11,2025],[4,2,11,2025],[5,3,11,2025],[6,4,11,2025],[7,5,11,2025],[8,6,11,2025],[9,7,11,2025],[10,1,11,2025],[11,2,11,2025],[12,3,11,2025],[13,4,11,2025],[14,5,11,2025],[15,6,11,2025],[16,7,11,2025],[17,1,11,2025],[18,2,11,2025],[19,3,11,2025],[20,4,11,2025],[21,5,11,2025],[22,6,11,2025],[23,7,11,2025],[24,1,11,2025],[25,2,11,2025],[26,3,11,2025],[27,4,11,2025],[28,5,11,2025],[29,6,11,2025],[30,7,11,2025],[1,1,12,2025],[2,2,12,2025],[3,3,12,2025],[4,4,12,2025],[5,5,12,2025],[6,6,12,2025],[7,7,12,2025],[8,1,12,2025],[9,2,12,2025],[10,3,12,2025],[11,4,12,2025],[12,5,12,2025],[13,6,12,2025],[14,7,12,2025],[15,1,12,2025],[16,2,12,2025],[17,3,12,2025],[18,4,12,2025],[19,5,12,2025],[20,6,12,2025],[21,7,12,2025],[22,1,12,2025],[23,2,12,2025],[24,3,12,2025],[25,4,12,2025],[26,5,12,2025],[27,6,12,2025],[28,7,12,2025],[29,1,12,2025],[30,2,12,2025],[31,3,12,2025],[1,4,1,2026],[2,5,1,2026],[3,6,1,2026],[4,7,1,2026],[5,1,1,2026],[6,2,1,2026],[7,3,1,2026],[8,4,1,2026],[9,5,1,2026],[10,6,1,2026],[11,7,1,2026],[12,1,1,2026],[13,2,1,2026],[14,3,1,2026],[15,4,1,2026],[16,5,1,2026],[17,6,1,2026],[18,7,1,2026],[19,1,1,2026],[20,2,1,2026],[21,3,1,2026],[22,4,1,2026],[23,5,1,2026],[24,6,1,2026],[25,7,1,2026],[26,1,1,2026],[27,2,1,2026],[28,3,1,2026],[29,4,1,2026],[30,5,1,2026],[31,6,1,2026],[1,7,2,2026],[2,1,2,2026],[3,2,2,2026],[4,3,2,2026],[5,4,2,2026],[6,5,2,2026],[7,6,2,2026],[8,7,2,2026],[9,1,2,2026],[10,2,2,2026],[11,3,2,2026],[12,4,2,2026],[13,5,2,2026],[14,6,2,2026],[15,7,2,2026],[16,1,2,2026],[17,2,2,2026],[18,3,2,2026],[19,4,2,2026],[20,5,2,2026],[21,6,2,2026],[22,7,2,2026],[23,1,2,2026],[24,2,2,2026],[25,3,2,2026],[26,4,2,2026],[27,5,2,2026],[28,6,2,2026],[1,7,3,2026],[2,1,3,2026],[3,2,3,2026],[4,3,3,2026],[5,4,3,2026],[6,5,3,2026],[7,6,3,2026],[8,7,3,2026],[9,1,3,2026],[10,2,3,2026],[11,3,3,2026],[12,4,3,2026],[13,5,3,2026],[14,6,3,2026],[15,7,3,2026],[16,1,3,2026],[17,2,3,2026],[18,3,3,2026],[19,4,3,2026],[20,5,3,2026],[21,6,3,2026],[22,7,3,2026],[23,1,3,2026],[24,2,3,2026],[25,3,3,2026],[26,4,3,2026],[27,5,3,2026],[28,6,3,2026],[29,7,3,2026],[30,1,3,2026],[31,2,3,2026],[1,3,4,2026],[2,4,4,2026],[3,5,4,2026],[4,6,4,2026],[5,7,4,2026],[6,1,4,2026],[7,2,4,2026],[8,3,4,2026],[9,4,4,2026],[10,5,4,2026],[11,6,4,2026],[12,7,4,2026],[13,1,4,2026],[14,2,4,2026],[15,3,4,2026],[16,4,4,2026],[17,5,4,2026],[18,6,4,2026],[19,7,4,2026],[20,1,4,2026],[21,2,4,2026],[22,3,4,2026],[23,4,4,2026],[24,5,4,2026],[25,6,4,2026],[26,7,4,2026],[27,1,4,2026],[28,2,4,2026],[29,3,4,2026],[30,4,4,2026],[1,5,5,2026],[2,6,5,2026],[3,7,5,2026],[4,1,5,2026],[5,2,5,2026],[6,3,5,2026],[7,4,5,2026],[8,5,5,2026],[9,6,5,2026],[10,7,5,2026],[11,1,5,2026],[12,2,5,2026],[13,3,5,2026],[14,4,5,2026],[15,5,5,2026],[16,6,5,2026],[17,7,5,2026],[18,1,5,2026],[19,2,5,2026],[20,3,5,2026],[21,4,5,2026],[22,5,5,2026],[23,6,5,2026],[24,7,5,2026],[25,1,5,2026],[26,2,5,2026],[27,3,5,2026],[28,4,5,2026],[29,5,5,2026],[30,6,5,2026],[31,7,5,2026],[1,1,6,2026],[2,2,6,2026],[3,3,6,2026],[4,4,6,2026],[5,5,6,2026],[6,6,6,2026],[7,7,6,2026],[8,1,6,2026],[9,2,6,2026],[10,3,6,2026],[11,4,6,2026],[12,5,6,2026],[13,6,6,2026],[14,7,6,2026],[15,1,6,2026],[16,2,6,2026],[17,3,6,2026],[18,4,6,2026],[19,5,6,2026],[20,6,6,2026],[21,7,6,2026],[22,1,6,2026],[23,2,6,2026],[24,3,6,2026],[25,4,6,2026],[26,5,6,2026],[27,6,6,2026],[28,7,6,2026],[29,1,6,2026],[30,2,6,2026],[1,3,7,2026],[2,4,7,2026],[3,5,7,2026],[4,6,7,2026],[5,7,7,2026],[6,1,7,2026],[7,2,7,2026],[8,3,7,2026],[9,4,7,2026],[10,5,7,2026],[11,6,7,2026],[12,7,7,2026],[13,1,7,2026],[14,2,7,2026],[15,3,7,2026],[16,4,7,2026],[17,5,7,2026],[18,6,7,2026],[19,7,7,2026],[20,1,7,2026],[21,2,7,2026],[22,3,7,2026],[23,4,7,2026],[24,5,7,2026],[25,6,7,2026],[26,7,7,2026],[27,1,7,2026],[28,2,7,2026],[29,3,7,2026],[30,4,7,2026],[31,5,7,2026],[1,6,8,2026],[2,7,8,2026],[3,1,8,2026],[4,2,8,2026],[5,3,8,2026],[6,4,8,2026],[7,5,8,2026],[8,6,8,2026],[9,7,8,2026],[10,1,8,2026],[11,2,8,2026],[12,3,8,2026],[13,4,8,2026],[14,5,8,2026],[15,6,8,2026],[16,7,8,2026],[17,1,8,2026],[18,2,8,2026],[19,3,8,2026],[20,4,8,2026],[21,5,8,2026],[22,6,8,2026],[23,7,8,2026],[24,1,8,2026],[25,2,8,2026],[26,3,8,2026],[27,4,8,2026],[28,5,8,2026],[29,6,8,2026],[30,7,8,2026],[31,1,8,2026],[1,2,9,2026],[2,3,9,2026],[3,4,9,2026],[4,5,9,2026],[5,6,9,2026],[6,7,9,2026],[7,1,9,2026],[8,2,9,2026],[9,3,9,2026],[10,4,9,2026],[11,5,9,2026],[12,6,9,2026],[13,7,9,2026],[14,1,9,2026],[15,2,9,2026],[16,3,9,2026],[17,4,9,2026],[18,5,9,2026],[19,6,9,2026],[20,7,9,2026],
+				[21,1,9,2026],[22,2,9,2026],[23,3,9,2026],[24,4,9,2026],[25,5,9,2026],[26,6,9,2026],[27,7,9,2026],[28,1,9,2026],[29,2,9,2026],[30,3,9,2026],[1,4,10,2026],[2,5,10,2026],[3,6,10,2026],[4,7,10,2026],[5,1,10,2026],[6,2,10,2026],[7,3,10,2026],[8,4,10,2026],[9,5,10,2026],[10,6,10,2026],[11,7,10,2026],[12,1,10,2026],[13,2,10,2026],[14,3,10,2026],[15,4,10,2026],[16,5,10,2026],[17,6,10,2026],[18,7,10,2026],[19,1,10,2026],[20,2,10,2026],[21,3,10,2026],[22,4,10,2026],[23,5,10,2026],[24,6,10,2026],[25,7,10,2026],[26,1,10,2026],[27,2,10,2026],[28,3,10,2026],[29,4,10,2026],[30,5,10,2026],[31,6,10,2026],[1,7,11,2026],[2,1,11,2026],[3,2,11,2026],[4,3,11,2026],[5,4,11,2026],[6,5,11,2026],[7,6,11,2026],[8,7,11,2026],[9,1,11,2026],[10,2,11,2026],[11,3,11,2026],[12,4,11,2026],[13,5,11,2026],[14,6,11,2026],[15,7,11,2026],[16,1,11,2026],[17,2,11,2026],[18,3,11,2026],[19,4,11,2026],[20,5,11,2026],[21,6,11,2026],[22,7,11,2026],[23,1,11,2026],[24,2,11,2026],[25,3,11,2026],[26,4,11,2026],[27,5,11,2026],[28,6,11,2026],[29,7,11,2026],[30,1,11,2026],[1,2,12,2026],[2,3,12,2026],[3,4,12,2026],[4,5,12,2026],[5,6,12,2026],[6,7,12,2026],[7,1,12,2026],[8,2,12,2026],[9,3,12,2026],[10,4,12,2026],[11,5,12,2026],[12,6,12,2026],[13,7,12,2026],[14,1,12,2026],[15,2,12,2026],[16,3,12,2026],[17,4,12,2026],[18,5,12,2026],[19,6,12,2026],[20,7,12,2026],[21,1,12,2026],[22,2,12,2026],[23,3,12,2026],[24,4,12,2026],[25,5,12,2026],[26,6,12,2026],[27,7,12,2026],[28,1,12,2026],[29,2,12,2026],[30,3,12,2026],[31,4,12,2026],[1,5,1,2027],[2,6,1,2027],[3,7,1,2027],[4,1,1,2027],[5,2,1,2027],[6,3,1,2027],[7,4,1,2027],[8,5,1,2027],[9,6,1,2027],[10,7,1,2027],[11,1,1,2027],[12,2,1,2027],[13,3,1,2027],[14,4,1,2027],[15,5,1,2027],[16,6,1,2027],[17,7,1,2027],[18,1,1,2027],[19,2,1,2027],[20,3,1,2027],[21,4,1,2027],[22,5,1,2027],[23,6,1,2027],[24,7,1,2027],[25,1,1,2027],[26,2,1,2027],[27,3,1,2027],[28,4,1,2027],[29,5,1,2027],[30,6,1,2027],[31,7,1,2027],[1,1,2,2027],[2,2,2,2027],[3,3,2,2027],[4,4,2,2027],[5,5,2,2027],[6,6,2,2027],[7,7,2,2027],[8,1,2,2027],[9,2,2,2027],[10,3,2,2027],[11,4,2,2027],[12,5,2,2027],[13,6,2,2027],[14,7,2,2027],[15,1,2,2027],[16,2,2,2027],[17,3,2,2027],[18,4,2,2027],[19,5,2,2027],[20,6,2,2027],[21,7,2,2027],[22,1,2,2027],[23,2,2,2027],[24,3,2,2027],[25,4,2,2027],[26,5,2,2027],[27,6,2,2027],[28,7,2,2027],[1,1,3,2027],[2,2,3,2027],[3,3,3,2027],[4,4,3,2027],[5,5,3,2027],[6,6,3,2027],[7,7,3,2027],[8,1,3,2027],[9,2,3,2027],[10,3,3,2027],[11,4,3,2027],[12,5,3,2027],[13,6,3,2027],[14,7,3,2027],[15,1,3,2027],[16,2,3,2027],[17,3,3,2027],[18,4,3,2027],[19,5,3,2027],[20,6,3,2027],[21,7,3,2027],[22,1,3,2027],[23,2,3,2027],[24,3,3,2027],[25,4,3,2027],[26,5,3,2027],[27,6,3,2027],[28,7,3,2027],[29,1,3,2027],[30,2,3,2027],[31,3,3,2027],[1,4,4,2027],[2,5,4,2027],[3,6,4,2027],[4,7,4,2027],[5,1,4,2027],[6,2,4,2027],[7,3,4,2027],[8,4,4,2027],[9,5,4,2027],[10,6,4,2027],[11,7,4,2027],[12,1,4,2027],[13,2,4,2027],[14,3,4,2027],[15,4,4,2027],[16,5,4,2027],[17,6,4,2027],[18,7,4,2027],[19,1,4,2027],[20,2,4,2027],[21,3,4,2027],[22,4,4,2027],[23,5,4,2027],[24,6,4,2027],[25,7,4,2027],[26,1,4,2027],[27,2,4,2027],[28,3,4,2027],[29,4,4,2027],[30,5,4,2027],[1,6,5,2027],[2,7,5,2027],[3,1,5,2027],[4,2,5,2027],[5,3,5,2027],[6,4,5,2027],[7,5,5,2027],[8,6,5,2027],[9,7,5,2027],[10,1,5,2027],[11,2,5,2027],[12,3,5,2027],[13,4,5,2027],[14,5,5,2027],[15,6,5,2027],[16,7,5,2027],[17,1,5,2027],[18,2,5,2027],[19,3,5,2027],[20,4,5,2027],[21,5,5,2027],[22,6,5,2027],[23,7,5,2027],[24,1,5,2027],[25,2,5,2027],[26,3,5,2027],[27,4,5,2027],[28,5,5,2027],[29,6,5,2027],[30,7,5,2027],[31,1,5,2027],[1,2,6,2027],[2,3,6,2027],[3,4,6,2027],[4,5,6,2027],[5,6,6,2027],[6,7,6,2027],[7,1,6,2027],[8,2,6,2027],[9,3,6,2027],[10,4,6,2027],[11,5,6,2027],[12,6,6,2027],[13,7,6,2027],[14,1,6,2027],[15,2,6,2027],[16,3,6,2027],[17,4,6,2027],[18,5,6,2027],[19,6,6,2027],[20,7,6,2027],[21,1,6,2027],[22,2,6,2027],[23,3,6,2027],[24,4,6,2027],[25,5,6,2027],[26,6,6,2027],[27,7,6,2027],[28,1,6,2027],[29,2,6,2027],[30,3,6,2027],[1,4,7,2027],[2,5,7,2027],[3,6,7,2027],[4,7,7,2027],[5,1,7,2027],[6,2,7,2027],[7,3,7,2027],[8,4,7,2027],[9,5,7,2027],[10,6,7,2027],[11,7,7,2027],[12,1,7,2027],[13,2,7,2027],[14,3,7,2027],[15,4,7,2027],[16,5,7,2027],[17,6,7,2027],[18,7,7,2027],[19,1,7,2027],[20,2,7,2027],[21,3,7,2027],[22,4,7,2027],[23,5,7,2027],[24,6,7,2027],[25,7,7,2027],[26,1,7,2027],[27,2,7,2027],[28,3,7,2027],[29,4,7,2027],[30,5,7,2027],[31,6,7,2027],[1,7,8,2027],[2,1,8,2027],[3,2,8,2027],[4,3,8,2027],[5,4,8,2027],[6,5,8,2027],[7,6,8,2027],[8,7,8,2027],[9,1,8,2027],[10,2,8,2027],[11,3,8,2027],[12,4,8,2027],[13,5,8,2027],[14,6,8,2027],[15,7,8,2027],[16,1,8,2027],[17,2,8,2027],[18,3,8,2027],[19,4,8,2027],[20,5,8,2027],[21,6,8,2027],[22,7,8,2027],[23,1,8,2027],[24,2,8,2027],[25,3,8,2027],[26,4,8,2027],[27,5,8,2027],[28,6,8,2027],[29,7,8,2027],[30,1,8,2027],[31,2,8,2027],[1,3,9,2027],[2,4,9,2027],[3,5,9,2027],[4,6,9,2027],[5,7,9,2027],[6,1,9,2027],[7,2,9,2027],[8,3,9,2027],[9,4,9,2027],[10,5,9,2027],[11,6,9,2027],[12,7,9,2027],[13,1,9,2027],[14,2,9,2027],[15,3,9,2027],[16,4,9,2027],[17,5,9,2027],[18,6,9,2027],[19,7,9,2027],[20,1,9,2027],[21,2,9,2027],[22,3,9,2027],[23,4,9,2027],[24,5,9,2027],[25,6,9,2027],[26,7,9,2027],[27,1,9,2027],[28,2,9,2027],[29,3,9,2027],[30,4,9,2027],[1,5,10,2027],[2,6,10,2027],[3,7,10,2027],[4,1,10,2027],[5,2,10,2027],[6,3,10,2027],[7,4,10,2027],[8,5,10,2027],[9,6,10,2027],[10,7,10,2027],[11,1,10,2027],[12,2,10,2027],[13,3,10,2027],[14,4,10,2027],[15,5,10,2027],[16,6,10,2027],[17,7,10,2027],[18,1,10,2027],[19,2,10,2027],[20,3,10,2027],[21,4,10,2027],[22,5,10,2027],[23,6,10,2027],[24,7,10,2027],[25,1,10,2027],[26,2,10,2027],[27,3,10,2027],[28,4,10,2027],[29,5,10,2027],[30,6,10,2027],[31,7,10,2027],[1,1,11,2027],[2,2,11,2027],[3,3,11,2027],[4,4,11,2027],[5,5,11,2027],[6,6,11,2027],[7,7,11,2027],[8,1,11,2027],[9,2,11,2027],[10,3,11,2027],[11,4,11,2027],[12,5,11,2027],[13,6,11,2027],[14,7,11,2027],[15,1,11,2027],[16,2,11,2027],[17,3,11,2027],[18,4,11,2027],[19,5,11,2027],[20,6,11,2027],[21,7,11,2027],[22,1,11,2027],[23,2,11,2027],[24,3,11,2027],[25,4,11,2027],[26,5,11,2027],[27,6,11,2027],[28,7,11,2027],[29,1,11,2027],[30,2,11,2027],[1,3,12,2027],[2,4,12,2027],[3,5,12,2027],[4,6,12,2027],[5,7,12,2027],[6,1,12,2027],[7,2,12,2027],[8,3,12,2027],[9,4,12,2027],[10,5,12,2027],[11,6,12,2027],[12,7,12,2027],[13,1,12,2027],[14,2,12,2027],[15,3,12,2027],[16,4,12,2027],[17,5,12,2027],[18,6,12,2027],[19,7,12,2027],[20,1,12,2027],[21,2,12,2027],[22,3,12,2027],[23,4,12,2027],[24,5,12,2027],[25,6,12,2027],[26,7,12,2027],[27,1,12,2027],[28,2,12,2027],[29,3,12,2027],[30,4,12,2027],[31,5,12,2027],[1,6,1,2028],[2,7,1,2028],[3,1,1,2028],[4,2,1,2028],[5,3,1,2028],[6,4,1,2028],[7,5,1,2028],[8,6,1,2028],[9,7,1,2028],[10,1,1,2028],[11,2,1,2028],[12,3,1,2028],[13,4,1,2028],[14,5,1,2028],[15,6,1,2028],[16,7,1,2028],[17,1,1,2028],[18,2,1,2028],[19,3,1,2028],[20,4,1,2028],[21,5,1,2028],[22,6,1,2028],[23,7,1,2028],[24,1,1,2028],[25,2,1,2028],[26,3,1,2028],[27,4,1,2028],[28,5,1,2028],[29,6,1,2028],[30,7,1,2028],[31,1,1,2028],[1,2,2,2028],[2,3,2,2028],[3,4,2,2028],[4,5,2,2028],[5,6,2,2028],[6,7,2,2028],[7,1,2,2028],[8,2,2,2028],[9,3,2,2028],[10,4,2,2028],[11,5,2,2028],[12,6,2,2028],[13,7,2,2028],[14,1,2,2028],[15,2,2,2028],[16,3,2,2028],[17,4,2,2028],[18,5,2,2028],[19,6,2,2028],[20,7,2,2028],[21,1,2,2028],[22,2,2,2028],[23,3,2,2028],[24,4,2,2028],[25,5,2,2028],[26,6,2,2028],[27,7,2,2028],[28,1,2,2028],[29,2,2,2028],[1,3,3,2028],[2,4,3,2028],[3,5,3,2028],[4,6,3,2028],[5,7,3,2028],[6,1,3,2028],[7,2,3,2028],[8,3,3,2028],[9,4,3,2028],[10,5,3,2028],[11,6,3,2028],[12,7,3,2028],[13,1,3,2028],[14,2,3,2028],[15,3,3,2028],[16,4,3,2028],[17,5,3,2028],[18,6,3,2028],[19,7,3,2028],[20,1,3,2028],[21,2,3,2028],[22,3,3,2028],[23,4,3,2028],[24,5,3,2028],[25,6,3,2028],[26,7,3,2028],[27,1,3,2028],[28,2,3,2028],[29,3,3,2028],[30,4,3,2028],[31,5,3,2028],[1,6,4,2028],[2,7,4,2028],[3,1,4,2028],[4,2,4,2028],[5,3,4,2028],[6,4,4,2028],[7,5,4,2028],[8,6,4,2028],[9,7,4,2028],[10,1,4,2028],[11,2,4,2028],[12,3,4,2028],[13,4,4,2028],[14,5,4,2028],[15,6,4,2028],[16,7,4,2028],[17,1,4,2028],[18,2,4,2028],[19,3,4,2028],[20,4,4,2028],[21,5,4,2028],[22,6,4,2028],[23,7,4,2028],[24,1,4,2028],[25,2,4,2028],[26,3,4,2028],[27,4,4,2028],[28,5,4,2028],[29,6,4,2028],[30,7,4,2028],[1,1,5,2028],[2,2,5,2028],[3,3,5,2028],[4,4,5,2028],[5,5,5,2028],[6,6,5,2028],[7,7,5,2028],[8,1,5,2028],[9,2,5,2028],[10,3,5,2028],[11,4,5,2028],[12,5,5,2028],[13,6,5,2028],[14,7,5,2028],[15,1,5,2028],[16,2,5,2028],[17,3,5,2028],[18,4,5,2028],[19,5,5,2028],[20,6,5,2028],[21,7,5,2028],[22,1,5,2028],[23,2,5,2028],[24,3,5,2028],[25,4,5,2028],[26,5,5,2028],[27,6,5,2028],[28,7,5,2028],[29,1,5,2028],[30,2,5,2028],[31,3,5,2028],[1,4,6,2028],[2,5,6,2028],[3,6,6,2028],[4,7,6,2028],[5,1,6,2028],[6,2,6,2028],[7,3,6,2028],[8,4,6,2028],[9,5,6,2028],[10,6,6,2028],[11,7,6,2028],[12,1,6,2028],[13,2,6,2028],[14,3,6,2028],[15,4,6,2028],[16,5,6,2028],[17,6,6,2028],[18,7,6,2028],[19,1,6,2028],[20,2,6,2028],[21,3,6,2028],[22,4,6,2028],[23,5,6,2028],[24,6,6,2028],[25,7,6,2028],[26,1,6,2028],[27,2,6,2028],[28,3,6,2028],[29,4,6,2028],[30,5,6,2028],[1,6,7,2028],[2,7,7,2028],[3,1,7,2028],[4,2,7,2028],[5,3,7,2028],[6,4,7,2028],[7,5,7,2028],[8,6,7,2028],[9,7,7,2028],[10,1,7,2028],[11,2,7,2028],[12,3,7,2028],[13,4,7,2028],[14,5,7,2028],[15,6,7,2028],[16,7,7,2028],[17,1,7,2028],[18,2,7,2028],[19,3,7,2028],[20,4,7,2028],[21,5,7,2028],[22,6,7,2028],[23,7,7,2028],[24,1,7,2028],[25,2,7,2028],[26,3,7,2028],[27,4,7,2028],[28,5,7,2028],[29,6,7,2028],[30,7,7,2028],[31,1,7,2028],[1,2,8,2028],[2,3,8,2028],[3,4,8,2028],[4,5,8,2028],[5,6,8,2028],[6,7,8,2028],[7,1,8,2028],[8,2,8,2028],[9,3,8,2028],[10,4,8,2028],[11,5,8,2028],[12,6,8,2028],[13,7,8,2028],[14,1,8,2028],[15,2,8,2028],[16,3,8,2028],[17,4,8,2028],[18,5,8,2028],[19,6,8,2028],[20,7,8,2028],[21,1,8,2028],[22,2,8,2028],[23,3,8,2028],[24,4,8,2028],[25,5,8,2028],[26,6,8,2028],[27,7,8,2028],[28,1,8,2028],[29,2,8,2028],[30,3,8,2028],[31,4,8,2028],[1,5,9,2028],[2,6,9,2028],[3,7,9,2028],[4,1,9,2028],[5,2,9,2028],[6,3,9,2028],[7,4,9,2028],[8,5,9,2028],[9,6,9,2028],[10,7,9,2028],[11,1,9,2028],[12,2,9,2028],[13,3,9,2028],[14,4,9,2028],[15,5,9,2028],[16,6,9,2028],[17,7,9,2028],[18,1,9,2028],[19,2,9,2028],[20,3,9,2028],[21,4,9,2028],[22,5,9,2028],[23,6,9,2028],[24,7,9,2028],[25,1,9,2028],[26,2,9,2028],[27,3,9,2028],[28,4,9,2028],[29,5,9,2028],[30,6,9,2028],[1,7,10,2028],[2,1,10,2028],[3,2,10,2028],[4,3,10,2028],[5,4,10,2028],[6,5,10,2028],[7,6,10,2028],[8,7,10,2028],[9,1,10,2028],[10,2,10,2028],[11,3,10,2028],[12,4,10,2028],[13,5,10,2028],[14,6,10,2028],[15,7,10,2028],[16,1,10,2028],[17,2,10,2028],[18,3,10,2028],[19,4,10,2028],[20,5,10,2028],[21,6,10,2028],[22,7,10,2028],[23,1,10,2028],[24,2,10,2028],[25,3,10,2028],[26,4,10,2028],[27,5,10,2028],[28,6,10,2028],[29,7,10,2028],[30,1,10,2028],[31,2,10,2028],[1,3,11,2028],[2,4,11,2028],[3,5,11,2028],[4,6,11,2028],[5,7,11,2028],[6,1,11,2028],[7,2,11,2028],[8,3,11,2028],[9,4,11,2028],[10,5,11,2028],[11,6,11,2028],[12,7,11,2028],[13,1,11,2028],[14,2,11,2028],[15,3,11,2028],[16,4,11,2028],[17,5,11,2028],[18,6,11,2028],[19,7,11,2028],[20,1,11,2028],[21,2,11,2028],[22,3,11,2028],[23,4,11,2028],[24,5,11,2028],[25,6,11,2028],[26,7,11,2028],[27,1,11,2028],[28,2,11,2028],[29,3,11,2028],[30,4,11,2028],[1,5,12,2028],[2,6,12,2028],[3,7,12,2028],[4,1,12,2028],[5,2,12,2028],[6,3,12,2028],[7,4,12,2028],[8,5,12,2028],[9,6,12,2028],[10,7,12,2028],[11,1,12,2028],[12,2,12,2028],[13,3,12,2028],[14,4,12,2028],[15,5,12,2028],[16,6,12,2028],[17,7,12,2028],[18,1,12,2028],[19,2,12,2028],[20,3,12,2028],[21,4,12,2028],[22,5,12,2028],[23,6,12,2028],[24,7,12,2028],[25,1,12,2028],[26,2,12,2028],[27,3,12,2028],[28,4,12,2028],[29,5,12,2028],[30,6,12,2028],[31,7,12,2028],[1,1,1,2029],[2,2,1,2029],[3,3,1,2029],[4,4,1,2029],[5,5,1,2029],[6,6,1,2029],[7,7,1,2029],[8,1,1,2029],[9,2,1,2029],[10,3,1,2029],[11,4,1,2029],[12,5,1,2029],[13,6,1,2029],[14,7,1,2029],[15,1,1,2029],[16,2,1,2029],[17,3,1,2029],[18,4,1,2029],[19,5,1,2029],[20,6,1,2029],[21,7,1,2029],[22,1,1,2029],[23,2,1,2029],[24,3,1,2029],[25,4,1,2029],[26,5,1,2029],[27,6,1,2029],[28,7,1,2029],[29,1,1,2029],[30,2,1,2029],[31,3,1,2029],[1,4,2,2029],[2,5,2,2029],[3,6,2,2029],[4,7,2,2029],[5,1,2,2029],[6,2,2,2029],[7,3,2,2029],[8,4,2,2029],[9,5,2,2029],[10,6,2,2029],[11,7,2,2029],[12,1,2,2029],[13,2,2,2029],[14,3,2,2029],[15,4,2,2029],[16,5,2,2029],[17,6,2,2029],[18,7,2,2029],[19,1,2,2029],[20,2,2,2029],[21,3,2,2029],[22,4,2,2029],[23,5,2,2029],[24,6,2,2029],[25,7,2,2029],[26,1,2,2029],[27,2,2,2029],[28,3,2,2029],[1,4,3,2029],[2,5,3,2029],[3,6,3,2029],[4,7,3,2029],[5,1,3,2029],[6,2,3,2029],[7,3,3,2029],[8,4,3,2029],[9,5,3,2029],[10,6,3,2029],[11,7,3,2029],[12,1,3,2029],[13,2,3,2029],[14,3,3,2029],[15,4,3,2029],[16,5,3,2029],[17,6,3,2029],[18,7,3,2029],[19,1,3,2029],[20,2,3,2029],[21,3,3,2029],[22,4,3,2029],[23,5,3,2029],[24,6,3,2029],[25,7,3,2029],[26,1,3,2029],[27,2,3,2029],[28,3,3,2029],[29,4,3,2029],[30,5,3,2029],[31,6,3,2029],[1,7,4,2029],[2,1,4,2029],[3,2,4,2029],[4,3,4,2029],[5,4,4,2029],[6,5,4,2029],[7,6,4,2029],[8,7,4,2029],[9,1,4,2029],[10,2,4,2029],[11,3,4,2029],[12,4,4,2029],[13,5,4,2029],[14,6,4,2029],[15,7,4,2029],[16,1,4,2029],[17,2,4,2029],[18,3,4,2029],[19,4,4,2029],[20,5,4,2029],[21,6,4,2029],[22,7,4,2029],[23,1,4,2029],[24,2,4,2029],[25,3,4,2029],[26,4,4,2029],[27,5,4,2029],[28,6,4,2029],[29,7,4,2029],[30,1,4,2029],[1,2,5,2029],[2,3,5,2029],[3,4,5,2029],[4,5,5,2029],[5,6,5,2029],[6,7,5,2029],[7,1,5,2029],[8,2,5,2029],[9,3,5,2029],[10,4,5,2029],[11,5,5,2029],[12,6,5,2029],[13,7,5,2029],[14,1,5,2029],[15,2,5,2029],[16,3,5,2029],[17,4,5,2029],[18,5,5,2029],[19,6,5,2029],[20,7,5,2029],[21,1,5,2029],[22,2,5,2029],[23,3,5,2029],[24,4,5,2029],[25,5,5,2029],[26,6,5,2029],[27,7,5,2029],[28,1,5,2029],[29,2,5,2029],[30,3,5,2029],[31,4,5,2029],[1,5,6,2029],[2,6,6,2029],[3,7,6,2029],[4,1,6,2029],[5,2,6,2029],[6,3,6,2029],[7,4,6,2029],[8,5,6,2029],[9,6,6,2029],[10,7,6,2029],[11,1,6,2029],[12,2,6,2029],[13,3,6,2029],[14,4,6,2029],[15,5,6,2029],[16,6,6,2029],[17,7,6,2029],[18,1,6,2029],[19,2,6,2029],[20,3,6,2029],[21,4,6,2029],[22,5,6,2029],[23,6,6,2029],[24,7,6,2029],[25,1,6,2029],[26,2,6,2029],[27,3,6,2029],[28,4,6,2029],[29,5,6,2029],[30,6,6,2029],[1,7,7,2029],[2,1,7,2029],[3,2,7,2029],[4,3,7,2029],[5,4,7,2029],[6,5,7,2029],[7,6,7,2029],[8,7,7,2029],[9,1,7,2029],[10,2,7,2029],[11,3,7,2029],[12,4,7,2029],[13,5,7,2029],[14,6,7,2029],[15,7,7,2029],[16,1,7,2029],[17,2,7,2029],[18,3,7,2029],[19,4,7,2029],[20,5,7,2029],[21,6,7,2029],[22,7,7,2029],[23,1,7,2029],[24,2,7,2029],[25,3,7,2029],[26,4,7,2029],[27,5,7,2029],[28,6,7,2029],[29,7,7,2029],[30,1,7,2029],[31,2,7,2029],[1,3,8,2029],[2,4,8,2029],[3,5,8,2029],[4,6,8,2029],[5,7,8,2029],[6,1,8,2029],[7,2,8,2029],[8,3,8,2029],[9,4,8,2029],[10,5,8,2029],[11,6,8,2029],[12,7,8,2029],[13,1,8,2029],[14,2,8,2029],[15,3,8,2029],[16,4,8,2029],[17,5,8,2029],[18,6,8,2029],[19,7,8,2029],[20,1,8,2029],[21,2,8,2029],[22,3,8,2029],[23,4,8,2029],[24,5,8,2029],[25,6,8,2029],[26,7,8,2029],[27,1,8,2029],[28,2,8,2029],[29,3,8,2029],[30,4,8,2029],[31,5,8,2029],[1,6,9,2029],[2,7,9,2029],[3,1,9,2029],[4,2,9,2029],[5,3,9,2029],[6,4,9,2029],[7,5,9,2029],[8,6,9,2029],[9,7,9,2029],[10,1,9,2029],[11,2,9,2029],[12,3,9,2029],[13,4,9,2029],[14,5,9,2029],[15,6,9,2029],[16,7,9,2029],[17,1,9,2029],[18,2,9,2029],[19,3,9,2029],[20,4,9,2029],[21,5,9,2029],[22,6,9,2029],[23,7,9,2029],[24,1,9,2029],[25,2,9,2029],[26,3,9,2029],[27,4,9,2029],[28,5,9,2029],[29,6,9,2029],[30,7,9,2029],[1,1,10,2029],[2,2,10,2029],[3,3,10,2029],[4,4,10,2029],[5,5,10,2029],[6,6,10,2029],[7,7,10,2029],[8,1,10,2029],[9,2,10,2029],[10,3,10,2029],[11,4,10,2029],[12,5,10,2029],[13,6,10,2029],[14,7,10,2029],[15,1,10,2029],[16,2,10,2029],[17,3,10,2029],[18,4,10,2029],[19,5,10,2029],[20,6,10,2029],[21,7,10,2029],[22,1,10,2029],[23,2,10,2029],[24,3,10,2029],[25,4,10,2029],[26,5,10,2029],[27,6,10,2029],[28,7,10,2029],[29,1,10,2029],[30,2,10,2029],[31,3,10,2029],[1,4,11,2029],[2,5,11,2029],[3,6,11,2029],[4,7,11,2029],[5,1,11,2029],[6,2,11,2029],[7,3,11,2029],[8,4,11,2029],[9,5,11,2029],[10,6,11,2029],[11,7,11,2029],[12,1,11,2029],[13,2,11,2029],[14,3,11,2029],[15,4,11,2029],[16,5,11,2029],[17,6,11,2029],[18,7,11,2029],
+				[19,1,11,2029],[20,2,11,2029],[21,3,11,2029],[22,4,11,2029],[23,5,11,2029],[24,6,11,2029],[25,7,11,2029],[26,1,11,2029],[27,2,11,2029],[28,3,11,2029],[29,4,11,2029],[30,5,11,2029],[1,6,12,2029],[2,7,12,2029],[3,1,12,2029],[4,2,12,2029],[5,3,12,2029],[6,4,12,2029],[7,5,12,2029],[8,6,12,2029],[9,7,12,2029],[10,1,12,2029],[11,2,12,2029],[12,3,12,2029],[13,4,12,2029],[14,5,12,2029],[15,6,12,2029],[16,7,12,2029],[17,1,12,2029],[18,2,12,2029],[19,3,12,2029],[20,4,12,2029],[21,5,12,2029],[22,6,12,2029],[23,7,12,2029],[24,1,12,2029],[25,2,12,2029],[26,3,12,2029],[27,4,12,2029],[28,5,12,2029],[29,6,12,2029],[30,7,12,2029],[31,1,12,2029],[1,2,1,2030],[2,3,1,2030],[3,4,1,2030],[4,5,1,2030],[5,6,1,2030],[6,7,1,2030],[7,1,1,2030],[8,2,1,2030],[9,3,1,2030],[10,4,1,2030],[11,5,1,2030],[12,6,1,2030],[13,7,1,2030],[14,1,1,2030],[15,2,1,2030],[16,3,1,2030],[17,4,1,2030],[18,5,1,2030],[19,6,1,2030],[20,7,1,2030],[21,1,1,2030],[22,2,1,2030],[23,3,1,2030],[24,4,1,2030],[25,5,1,2030],[26,6,1,2030],[27,7,1,2030],[28,1,1,2030],[29,2,1,2030],[30,3,1,2030],[31,4,1,2030],[1,5,2,2030],[2,6,2,2030],[3,7,2,2030],[4,1,2,2030],[5,2,2,2030],[6,3,2,2030],[7,4,2,2030],[8,5,2,2030],[9,6,2,2030],[10,7,2,2030],[11,1,2,2030],[12,2,2,2030],[13,3,2,2030],[14,4,2,2030],[15,5,2,2030],[16,6,2,2030],[17,7,2,2030],[18,1,2,2030],[19,2,2,2030],[20,3,2,2030],[21,4,2,2030],[22,5,2,2030],[23,6,2,2030],[24,7,2,2030],[25,1,2,2030],[26,2,2,2030],[27,3,2,2030],[28,4,2,2030],[1,5,3,2030],[2,6,3,2030],[3,7,3,2030],[4,1,3,2030],[5,2,3,2030],[6,3,3,2030],[7,4,3,2030],[8,5,3,2030],[9,6,3,2030],[10,7,3,2030],[11,1,3,2030],[12,2,3,2030],[13,3,3,2030],[14,4,3,2030],[15,5,3,2030],[16,6,3,2030],[17,7,3,2030],[18,1,3,2030],[19,2,3,2030],[20,3,3,2030],[21,4,3,2030],[22,5,3,2030],[23,6,3,2030],[24,7,3,2030],[25,1,3,2030],[26,2,3,2030],[27,3,3,2030],[28,4,3,2030],[29,5,3,2030],[30,6,3,2030],[31,7,3,2030],[1,1,4,2030],[2,2,4,2030],[3,3,4,2030],[4,4,4,2030],[5,5,4,2030],[6,6,4,2030],[7,7,4,2030],[8,1,4,2030],[9,2,4,2030],[10,3,4,2030],[11,4,4,2030],[12,5,4,2030],[13,6,4,2030],[14,7,4,2030],[15,1,4,2030],[16,2,4,2030],[17,3,4,2030],[18,4,4,2030],[19,5,4,2030],[20,6,4,2030],[21,7,4,2030],[22,1,4,2030],[23,2,4,2030],[24,3,4,2030],[25,4,4,2030],[26,5,4,2030],[27,6,4,2030],[28,7,4,2030],[29,1,4,2030],[30,2,4,2030],[1,3,5,2030],[2,4,5,2030],[3,5,5,2030],[4,6,5,2030],[5,7,5,2030],[6,1,5,2030],[7,2,5,2030],[8,3,5,2030],[9,4,5,2030],[10,5,5,2030],[11,6,5,2030],[12,7,5,2030],[13,1,5,2030],[14,2,5,2030],[15,3,5,2030],[16,4,5,2030],[17,5,5,2030],[18,6,5,2030],[19,7,5,2030],[20,1,5,2030],[21,2,5,2030],[22,3,5,2030],[23,4,5,2030],[24,5,5,2030],[25,6,5,2030],[26,7,5,2030],[27,1,5,2030],[28,2,5,2030],[29,3,5,2030],[30,4,5,2030],[31,5,5,2030],[1,6,6,2030],[2,7,6,2030],[3,1,6,2030],[4,2,6,2030],[5,3,6,2030],[6,4,6,2030],[7,5,6,2030],[8,6,6,2030],[9,7,6,2030],[10,1,6,2030],[11,2,6,2030],[12,3,6,2030],[13,4,6,2030],[14,5,6,2030],[15,6,6,2030],[16,7,6,2030],[17,1,6,2030],[18,2,6,2030],[19,3,6,2030],[20,4,6,2030],[21,5,6,2030],[22,6,6,2030],[23,7,6,2030],[24,1,6,2030],[25,2,6,2030],[26,3,6,2030],[27,4,6,2030],[28,5,6,2030],[29,6,6,2030],[30,7,6,2030],[1,1,7,2030],[2,2,7,2030],[3,3,7,2030],[4,4,7,2030],[5,5,7,2030],[6,6,7,2030],[7,7,7,2030],[8,1,7,2030],[9,2,7,2030],[10,3,7,2030],[11,4,7,2030],[12,5,7,2030],[13,6,7,2030],[14,7,7,2030],[15,1,7,2030],[16,2,7,2030],[17,3,7,2030],[18,4,7,2030],[19,5,7,2030],[20,6,7,2030],[21,7,7,2030],[22,1,7,2030],[23,2,7,2030],[24,3,7,2030],[25,4,7,2030],[26,5,7,2030],[27,6,7,2030],[28,7,7,2030],[29,1,7,2030],[30,2,7,2030],[31,3,7,2030],[1,4,8,2030],[2,5,8,2030],[3,6,8,2030],[4,7,8,2030],[5,1,8,2030],[6,2,8,2030],[7,3,8,2030],[8,4,8,2030],[9,5,8,2030],[10,6,8,2030],[11,7,8,2030],[12,1,8,2030],[13,2,8,2030],[14,3,8,2030],[15,4,8,2030],[16,5,8,2030],[17,6,8,2030],[18,7,8,2030],[19,1,8,2030],[20,2,8,2030],[21,3,8,2030],[22,4,8,2030],[23,5,8,2030],[24,6,8,2030],[25,7,8,2030],[26,1,8,2030],[27,2,8,2030],[28,3,8,2030],[29,4,8,2030],[30,5,8,2030],[31,6,8,2030],[1,7,9,2030],[2,1,9,2030],[3,2,9,2030],[4,3,9,2030],[5,4,9,2030],
+				[6,5,9,2030],[7,6,9,2030],[8,7,9,2030],[9,1,9,2030],[10,2,9,2030],[11,3,9,2030],[12,4,9,2030],[13,5,9,2030],[14,6,9,2030],[15,7,9,2030],[16,1,9,2030],[17,2,9,2030],[18,3,9,2030],[19,4,9,2030],[20,5,9,2030],[21,6,9,2030],[22,7,9,2030],[23,1,9,2030],[24,2,9,2030],[25,3,9,2030],[26,4,9,2030],[27,5,9,2030],[28,6,9,2030],[29,7,9,2030],[30,1,9,2030],[1,2,10,2030],[2,3,10,2030],[3,4,10,2030],[4,5,10,2030],[5,6,10,2030],[6,7,10,2030],[7,1,10,2030],[8,2,10,2030],[9,3,10,2030],[10,4,10,2030],[11,5,10,2030],[12,6,10,2030],[13,7,10,2030],[14,1,10,2030],[15,2,10,2030],[16,3,10,2030],[17,4,10,2030],[18,5,10,2030],[19,6,10,2030],[20,7,10,2030],[21,1,10,2030],[22,2,10,2030],[23,3,10,2030],[24,4,10,2030],[25,5,10,2030],[26,6,10,2030],[27,7,10,2030],[28,1,10,2030],[29,2,10,2030],[30,3,10,2030],[31,4,10,2030],[1,5,11,2030],[2,6,11,2030],[3,7,11,2030],[4,1,11,2030],[5,2,11,2030],[6,3,11,2030],[7,4,11,2030],[8,5,11,2030],[9,6,11,2030],[10,7,11,2030],[11,1,11,2030],[12,2,11,2030],[13,3,11,2030],[14,4,11,2030],[15,5,11,2030],[16,6,11,2030],[17,7,11,2030],[18,1,11,2030],[19,2,11,2030],[20,3,11,2030],[21,4,11,2030],[22,5,11,2030],[23,6,11,2030],[24,7,11,2030],[25,1,11,2030],[26,2,11,2030],[27,3,11,2030],[28,4,11,2030],[29,5,11,2030],[30,6,11,2030],[1,7,12,2030],[2,1,12,2030],[3,2,12,2030],[4,3,12,2030],[5,4,12,2030],[6,5,12,2030],[7,6,12,2030],[8,7,12,2030],[9,1,12,2030],[10,2,12,2030],[11,3,12,2030],[12,4,12,2030],[13,5,12,2030],[14,6,12,2030],[15,7,12,2030],[16,1,12,2030],[17,2,12,2030],[18,3,12,2030],[19,4,12,2030],[20,5,12,2030],[21,6,12,2030],[22,7,12,2030],[23,1,12,2030],[24,2,12,2030],[25,3,12,2030],[26,4,12,2030],[27,5,12,2030],[28,6,12,2030],[29,7,12,2030],[30,1,12,2030],[31,2,12,2030],[1,3,1,2031],[2,4,1,2031],[3,5,1,2031],[4,6,1,2031],[5,7,1,2031],[6,1,1,2031],[7,2,1,2031],[8,3,1,2031],[9,4,1,2031],[10,5,1,2031],[11,6,1,2031],[12,7,1,2031],[13,1,1,2031],[14,2,1,2031],[15,3,1,2031],[16,4,1,2031],[17,5,1,2031],[18,6,1,2031],[19,7,1,2031],[20,1,1,2031],[21,2,1,2031],[22,3,1,2031],[23,4,1,2031],[24,5,1,2031],[25,6,1,2031],[26,7,1,2031],[27,1,1,2031],[28,2,1,2031],[29,3,1,2031],[30,4,1,2031],[31,5,1,2031],[1,6,2,2031],[2,7,2,2031],[3,1,2,2031],[4,2,2,2031],[5,3,2,2031],[6,4,2,2031],[7,5,2,2031],[8,6,2,2031],[9,7,2,2031],[10,1,2,2031],[11,2,2,2031],[12,3,2,2031],[13,4,2,2031],[14,5,2,2031],[15,6,2,2031],[16,7,2,2031],[17,1,2,2031],[18,2,2,2031],[19,3,2,2031],[20,4,2,2031],[21,5,2,2031],[22,6,2,2031],[23,7,2,2031],[24,1,2,2031],[25,2,2,2031],[26,3,2,2031],[27,4,2,2031],[28,5,2,2031],[1,6,3,2031],[2,7,3,2031],[3,1,3,2031],[4,2,3,2031],[5,3,3,2031],[6,4,3,2031],[7,5,3,2031],[8,6,3,2031],[9,7,3,2031],[10,1,3,2031],[11,2,3,2031],[12,3,3,2031],[13,4,3,2031],[14,5,3,2031],[15,6,3,2031],[16,7,3,2031],[17,1,3,2031],[18,2,3,2031],[19,3,3,2031],[20,4,3,2031],[21,5,3,2031],[22,6,3,2031],[23,7,3,2031],[24,1,3,2031],[25,2,3,2031],[26,3,3,2031],[27,4,3,2031],[28,5,3,2031],[29,6,3,2031],[30,7,3,2031],[31,1,3,2031],[1,2,4,2031],[2,3,4,2031],[3,4,4,2031],[4,5,4,2031],[5,6,4,2031],[6,7,4,2031],[7,1,4,2031],[8,2,4,2031],[9,3,4,2031],[10,4,4,2031],[11,5,4,2031],[12,6,4,2031],[13,7,4,2031],[14,1,4,2031],[15,2,4,2031],[16,3,4,2031],[17,4,4,2031],[18,5,4,2031],[19,6,4,2031],[20,7,4,2031],[21,1,4,2031],[22,2,4,2031],[23,3,4,2031],[24,4,4,2031],[25,5,4,2031],[26,6,4,2031],[27,7,4,2031],[28,1,4,2031],[29,2,4,2031],[30,3,4,2031],[1,4,5,2031],[2,5,5,2031],[3,6,5,2031],[4,7,5,2031],[5,1,5,2031],[6,2,5,2031],[7,3,5,2031],[8,4,5,2031],[9,5,5,2031],[10,6,5,2031],[11,7,5,2031],[12,1,5,2031],[13,2,5,2031],[14,3,5,2031],[15,4,5,2031],[16,5,5,2031],[17,6,5,2031],[18,7,5,2031],[19,1,5,2031],[20,2,5,2031],[21,3,5,2031],[22,4,5,2031],[23,5,5,2031],[24,6,5,2031],[25,7,5,2031],[26,1,5,2031],[27,2,5,2031],[28,3,5,2031],[29,4,5,2031],[30,5,5,2031],[31,6,5,2031],[1,7,6,2031],[2,1,6,2031],[3,2,6,2031],[4,3,6,2031],[5,4,6,2031],[6,5,6,2031],[7,6,6,2031],[8,7,6,2031],[9,1,6,2031],[10,2,6,2031],[11,3,6,2031],[12,4,6,2031],[13,5,6,2031],[14,6,6,2031],[15,7,6,2031],[16,1,6,2031],[17,2,6,2031],[18,3,6,2031],[19,4,6,2031],[20,5,6,2031],[21,6,6,2031],[22,7,6,2031],[23,1,6,2031],[24,2,6,2031],[25,3,6,2031],[26,4,6,2031],[27,5,6,2031],[28,6,6,2031],[29,7,6,2031],[30,1,6,2031],[1,2,7,2031],[2,3,7,2031],[3,4,7,2031],[4,5,7,2031],[5,6,7,2031],[6,7,7,2031],[7,1,7,2031],[8,2,7,2031],[9,3,7,2031],[10,4,7,2031],[11,5,7,2031],[12,6,7,2031],[13,7,7,2031],[14,1,7,2031],[15,2,7,2031],[16,3,7,2031],[17,4,7,2031],[18,5,7,2031],[19,6,7,2031],[20,7,7,2031],[21,1,7,2031],[22,2,7,2031],[23,3,7,2031],[24,4,7,2031],[25,5,7,2031],[26,6,7,2031],[27,7,7,2031],[28,1,7,2031],[29,2,7,2031],[30,3,7,2031],[31,4,7,2031],[1,5,8,2031],[2,6,8,2031],[3,7,8,2031],[4,1,8,2031],[5,2,8,2031],[6,3,8,2031],[7,4,8,2031],[8,5,8,2031],[9,6,8,2031],[10,7,8,2031],[11,1,8,2031],[12,2,8,2031],[13,3,8,2031],[14,4,8,2031],[15,5,8,2031],[16,6,8,2031],[17,7,8,2031],[18,1,8,2031],[19,2,8,2031],[20,3,8,2031],[21,4,8,2031],[22,5,8,2031],[23,6,8,2031],[24,7,8,2031],[25,1,8,2031],[26,2,8,2031],[27,3,8,2031],[28,4,8,2031],[29,5,8,2031],[30,6,8,2031],[31,7,8,2031],[1,1,9,2031],[2,2,9,2031],[3,3,9,2031],[4,4,9,2031],[5,5,9,2031],[6,6,9,2031],[7,7,9,2031],[8,1,9,2031],[9,2,9,2031],[10,3,9,2031],[11,4,9,2031],[12,5,9,2031],[13,6,9,2031],[14,7,9,2031],[15,1,9,2031],[16,2,9,2031],[17,3,9,2031],[18,4,9,2031],[19,5,9,2031],[20,6,9,2031],[21,7,9,2031],[22,1,9,2031],[23,2,9,2031],[24,3,9,2031],[25,4,9,2031],[26,5,9,2031],[27,6,9,2031],[28,7,9,2031],[29,1,9,2031],[30,2,9,2031],[1,3,10,2031],[2,4,10,2031],[3,5,10,2031],[4,6,10,2031],[5,7,10,2031],[6,1,10,2031],[7,2,10,2031],[8,3,10,2031],[9,4,10,2031],[10,5,10,2031],[11,6,10,2031],[12,7,10,2031],[13,1,10,2031],[14,2,10,2031],[15,3,10,2031],[16,4,10,2031],[17,5,10,2031],[18,6,10,2031],[19,7,10,2031],[20,1,10,2031],[21,2,10,2031],[22,3,10,2031],[23,4,10,2031],[24,5,10,2031],[25,6,10,2031],[26,7,10,2031],[27,1,10,2031],[28,2,10,2031],[29,3,10,2031],[30,4,10,2031],[31,5,10,2031],[1,6,11,2031],[2,7,11,2031],[3,1,11,2031],[4,2,11,2031],[5,3,11,2031],[6,4,11,2031],[7,5,11,2031],[8,6,11,2031],[9,7,11,2031],[10,1,11,2031],[11,2,11,2031],[12,3,11,2031],[13,4,11,2031],[14,5,11,2031],[15,6,11,2031],[16,7,11,2031],[17,1,11,2031],[18,2,11,2031],[19,3,11,2031],[20,4,11,2031],[21,5,11,2031],[22,6,11,2031],[23,7,11,2031],[24,1,11,2031],[25,2,11,2031],[26,3,11,2031],[27,4,11,2031],[28,5,11,2031],[29,6,11,2031],[30,7,11,2031],[1,1,12,2031],[2,2,12,2031],[3,3,12,2031],[4,4,12,2031],[5,5,12,2031],[6,6,12,2031],[7,7,12,2031],[8,1,12,2031],[9,2,12,2031],[10,3,12,2031],[11,4,12,2031],[12,5,12,2031],[13,6,12,2031],[14,7,12,2031],[15,1,12,2031],[16,2,12,2031],[17,3,12,2031],[18,4,12,2031],[19,5,12,2031],[20,6,12,2031],[21,7,12,2031],[22,1,12,2031],[23,2,12,2031],[24,3,12,2031],[25,4,12,2031],[26,5,12,2031],[27,6,12,2031],[28,7,12,2031],[29,1,12,2031],[30,2,12,2031],[31,3,12,2031],[1,4,1,2032],[2,5,1,2032],[3,6,1,2032],[4,7,1,2032],[5,1,1,2032],[6,2,1,2032],[7,3,1,2032],[8,4,1,2032],[9,5,1,2032],[10,6,1,2032],[11,7,1,2032],[12,1,1,2032],[13,2,1,2032],[14,3,1,2032],[15,4,1,2032],[16,5,1,2032],[17,6,1,2032],[18,7,1,2032],[19,1,1,2032],[20,2,1,2032],[21,3,1,2032],[22,4,1,2032],[23,5,1,2032],[24,6,1,2032],[25,7,1,2032],[26,1,1,2032],[27,2,1,2032],[28,3,1,2032],[29,4,1,2032],[30,5,1,2032],[31,6,1,2032],[1,7,2,2032],[2,1,2,2032],[3,2,2,2032],[4,3,2,2032],[5,4,2,2032],[6,5,2,2032],[7,6,2,2032],[8,7,2,2032],[9,1,2,2032],[10,2,2,2032],[11,3,2,2032],[12,4,2,2032],[13,5,2,2032],[14,6,2,2032],[15,7,2,2032],[16,1,2,2032],[17,2,2,2032],[18,3,2,2032],[19,4,2,2032],[20,5,2,2032],[21,6,2,2032],[22,7,2,2032],[23,1,2,2032],[24,2,2,2032],[25,3,2,2032],[26,4,2,2032],[27,5,2,2032],[28,6,2,2032],[29,7,2,2032],[1,1,3,2032],[2,2,3,2032],[3,3,3,2032],[4,4,3,2032],[5,5,3,2032],[6,6,3,2032],[7,7,3,2032],[8,1,3,2032],[9,2,3,2032],[10,3,3,2032],[11,4,3,2032],[12,5,3,2032],[13,6,3,2032],[14,7,3,2032],[15,1,3,2032],[16,2,3,2032],[17,3,3,2032],[18,4,3,2032],[19,5,3,2032],[20,6,3,2032],[21,7,3,2032],[22,1,3,2032],[23,2,3,2032],[24,3,3,2032],[25,4,3,2032],[26,5,3,2032],[27,6,3,2032],[28,7,3,2032],[29,1,3,2032],[30,2,3,2032],[31,3,3,2032],[1,4,4,2032],[2,5,4,2032],[3,6,4,2032],[4,7,4,2032],[5,1,4,2032],[6,2,4,2032],[7,3,4,2032],[8,4,4,2032],[9,5,4,2032],[10,6,4,2032],[11,7,4,2032],[12,1,4,2032],[13,2,4,2032],[14,3,4,2032],[15,4,4,2032],[16,5,4,2032],[17,6,4,2032],[18,7,4,2032],[19,1,4,2032],[20,2,4,2032],[21,3,4,2032],[22,4,4,2032],[23,5,4,2032],[24,6,4,2032],[25,7,4,2032],[26,1,4,2032],[27,2,4,2032],[28,3,4,2032],[29,4,4,2032],[30,5,4,2032],[1,6,5,2032],[2,7,5,2032],[3,1,5,2032],[4,2,5,2032],[5,3,5,2032],[6,4,5,2032],[7,5,5,2032],[8,6,5,2032],[9,7,5,2032],[10,1,5,2032],[11,2,5,2032],[12,3,5,2032],[13,4,5,2032],[14,5,5,2032],[15,6,5,2032],[16,7,5,2032],[17,1,5,2032],[18,2,5,2032],[19,3,5,2032],[20,4,5,2032],[21,5,5,2032],[22,6,5,2032],[23,7,5,2032],[24,1,5,2032],[25,2,5,2032],[26,3,5,2032],[27,4,5,2032],[28,5,5,2032],[29,6,5,2032],[30,7,5,2032],[31,1,5,2032],[1,2,6,2032],[2,3,6,2032],[3,4,6,2032],[4,5,6,2032],[5,6,6,2032],[6,7,6,2032],[7,1,6,2032],[8,2,6,2032],[9,3,6,2032],[10,4,6,2032],[11,5,6,2032],[12,6,6,2032],[13,7,6,2032],[14,1,6,2032],[15,2,6,2032],[16,3,6,2032],[17,4,6,2032],[18,5,6,2032],[19,6,6,2032],[20,7,6,2032],[21,1,6,2032],[22,2,6,2032],[23,3,6,2032],[24,4,6,2032],[25,5,6,2032],[26,6,6,2032],[27,7,6,2032],[28,1,6,2032],[29,2,6,2032],[30,3,6,2032],[1,4,7,2032],[2,5,7,2032],[3,6,7,2032],[4,7,7,2032],[5,1,7,2032],[6,2,7,2032],[7,3,7,2032],[8,4,7,2032],[9,5,7,2032],[10,6,7,2032],[11,7,7,2032],[12,1,7,2032],[13,2,7,2032],[14,3,7,2032],[15,4,7,2032],[16,5,7,2032],[17,6,7,2032],[18,7,7,2032],[19,1,7,2032],[20,2,7,2032],[21,3,7,2032],[22,4,7,2032],[23,5,7,2032],[24,6,7,2032],[25,7,7,2032],[26,1,7,2032],[27,2,7,2032],[28,3,7,2032],[29,4,7,2032],[30,5,7,2032],[31,6,7,2032],[1,7,8,2032],[2,1,8,2032],[3,2,8,2032],[4,3,8,2032],[5,4,8,2032],[6,5,8,2032],[7,6,8,2032],[8,7,8,2032],[9,1,8,2032],[10,2,8,2032],[11,3,8,2032],[12,4,8,2032],[13,5,8,2032],[14,6,8,2032],[15,7,8,2032],[16,1,8,2032],[17,2,8,2032],[18,3,8,2032],[19,4,8,2032],[20,5,8,2032],[21,6,8,2032],[22,7,8,2032],[23,1,8,2032],[24,2,8,2032],[25,3,8,2032],[26,4,8,2032],[27,5,8,2032],[28,6,8,2032],[29,7,8,2032],[30,1,8,2032],[31,2,8,2032],[1,3,9,2032],[2,4,9,2032],[3,5,9,2032],[4,6,9,2032],[5,7,9,2032],[6,1,9,2032],[7,2,9,2032],[8,3,9,2032],[9,4,9,2032],[10,5,9,2032],[11,6,9,2032],[12,7,9,2032],[13,1,9,2032],[14,2,9,2032],[15,3,9,2032],[16,4,9,2032],[17,5,9,2032],[18,6,9,2032],[19,7,9,2032],[20,1,9,2032],[21,2,9,2032],[22,3,9,2032],[23,4,9,2032],[24,5,9,2032],[25,6,9,2032],[26,7,9,2032],[27,1,9,2032],[28,2,9,2032],[29,3,9,2032],[30,4,9,2032],[1,5,10,2032],[2,6,10,2032],[3,7,10,2032],[4,1,10,2032],[5,2,10,2032],[6,3,10,2032],[7,4,10,2032],[8,5,10,2032],[9,6,10,2032],[10,7,10,2032],[11,1,10,2032],[12,2,10,2032],[13,3,10,2032],[14,4,10,2032],[15,5,10,2032],[16,6,10,2032],[17,7,10,2032],[18,1,10,2032],[19,2,10,2032],[20,3,10,2032],[21,4,10,2032],[22,5,10,2032],[23,6,10,2032],[24,7,10,2032],[25,1,10,2032],[26,2,10,2032],[27,3,10,2032],[28,4,10,2032],[29,5,10,2032],[30,6,10,2032],[31,7,10,2032],[1,1,11,2032],[2,2,11,2032],[3,3,11,2032],[4,4,11,2032],[5,5,11,2032],[6,6,11,2032],[7,7,11,2032],[8,1,11,2032],[9,2,11,2032],[10,3,11,2032],[11,4,11,2032],[12,5,11,2032],[13,6,11,2032],[14,7,11,2032],[15,1,11,2032],[16,2,11,2032],[17,3,11,2032],[18,4,11,2032],[19,5,11,2032],[20,6,11,2032],[21,7,11,2032],[22,1,11,2032],[23,2,11,2032],[24,3,11,2032],[25,4,11,2032],[26,5,11,2032],[27,6,11,2032],[28,7,11,2032],[29,1,11,2032],[30,2,11,2032],[1,3,12,2032],[2,4,12,2032],[3,5,12,2032],[4,6,12,2032],[5,7,12,2032],[6,1,12,2032],[7,2,12,2032],[8,3,12,2032],[9,4,12,2032],[10,5,12,2032],[11,6,12,2032],[12,7,12,2032],[13,1,12,2032],[14,2,12,2032],[15,3,12,2032],[16,4,12,2032],[17,5,12,2032],[18,6,12,2032],[19,7,12,2032],[20,1,12,2032],[21,2,12,2032],[22,3,12,2032],[23,4,12,2032],[24,5,12,2032],[25,6,12,2032],[26,7,12,2032],[27,1,12,2032],[28,2,12,2032],[29,3,12,2032],[30,4,12,2032],[31,5,12,2032],[1,6,1,2033],[2,7,1,2033],[3,1,1,2033],[4,2,1,2033],[5,3,1,2033],[6,4,1,2033],[7,5,1,2033],[8,6,1,2033],[9,7,1,2033],[10,1,1,2033],[11,2,1,2033],[12,3,1,2033],[13,4,1,2033],[14,5,1,2033],[15,6,1,2033],[16,7,1,2033],[17,1,1,2033],[18,2,1,2033],[19,3,1,2033],[20,4,1,2033],[21,5,1,2033],[22,6,1,2033],[23,7,1,2033],[24,1,1,2033],[25,2,1,2033],[26,3,1,2033],[27,4,1,2033],[28,5,1,2033],[29,6,1,2033],[30,7,1,2033],[31,1,1,2033],[1,2,2,2033],[2,3,2,2033],[3,4,2,2033],[4,5,2,2033],[5,6,2,2033],[6,7,2,2033],[7,1,2,2033],[8,2,2,2033],[9,3,2,2033],[10,4,2,2033],[11,5,2,2033],[12,6,2,2033],[13,7,2,2033],[14,1,2,2033],[15,2,2,2033],[16,3,2,2033],[17,4,2,2033],[18,5,2,2033],[19,6,2,2033],[20,7,2,2033],[21,1,2,2033],[22,2,2,2033],[23,3,2,2033],[24,4,2,2033],[25,5,2,2033],[26,6,2,2033],[27,7,2,2033],[28,1,2,2033],[1,2,3,2033],[2,3,3,2033],[3,4,3,2033],[4,5,3,2033],[5,6,3,2033],[6,7,3,2033],[7,1,3,2033],[8,2,3,2033],[9,3,3,2033],[10,4,3,2033],[11,5,3,2033],[12,6,3,2033],[13,7,3,2033],[14,1,3,2033],[15,2,3,2033],[16,3,3,2033],[17,4,3,2033],[18,5,3,2033],[19,6,3,2033],[20,7,3,2033],[21,1,3,2033],[22,2,3,2033],[23,3,3,2033],[24,4,3,2033],[25,5,3,2033],[26,6,3,2033],[27,7,3,2033],[28,1,3,2033],[29,2,3,2033],[30,3,3,2033],[31,4,3,2033],[1,5,4,2033],[2,6,4,2033],[3,7,4,2033],[4,1,4,2033],[5,2,4,2033],[6,3,4,2033],[7,4,4,2033],[8,5,4,2033],[9,6,4,2033],[10,7,4,2033],[11,1,4,2033],[12,2,4,2033],[13,3,4,2033],[14,4,4,2033],[15,5,4,2033],[16,6,4,2033],[17,7,4,2033],[18,1,4,2033],
+				[19,2,4,2033],[20,3,4,2033],[21,4,4,2033],[22,5,4,2033],[23,6,4,2033],[24,7,4,2033],[25,1,4,2033],[26,2,4,2033],[27,3,4,2033],[28,4,4,2033],[29,5,4,2033],[30,6,4,2033],[1,7,5,2033],[2,1,5,2033],[3,2,5,2033],[4,3,5,2033],[5,4,5,2033],[6,5,5,2033],[7,6,5,2033],[8,7,5,2033],[9,1,5,2033],[10,2,5,2033],[11,3,5,2033],[12,4,5,2033],[13,5,5,2033],[14,6,5,2033],[15,7,5,2033],[16,1,5,2033],[17,2,5,2033],[18,3,5,2033],[19,4,5,2033],[20,5,5,2033],[21,6,5,2033],[22,7,5,2033],[23,1,5,2033],[24,2,5,2033],[25,3,5,2033],[26,4,5,2033],[27,5,5,2033],[28,6,5,2033],[29,7,5,2033],[30,1,5,2033],[31,2,5,2033],[1,3,6,2033],[2,4,6,2033],[3,5,6,2033],[4,6,6,2033],[5,7,6,2033],[6,1,6,2033],[7,2,6,2033],[8,3,6,2033],[9,4,6,2033],[10,5,6,2033],[11,6,6,2033],[12,7,6,2033],[13,1,6,2033],[14,2,6,2033],[15,3,6,2033],[16,4,6,2033],[17,5,6,2033],[18,6,6,2033],[19,7,6,2033],[20,1,6,2033],[21,2,6,2033],[22,3,6,2033],[23,4,6,2033],[24,5,6,2033],[25,6,6,2033],[26,7,6,2033],[27,1,6,2033],[28,2,6,2033],[29,3,6,2033],[30,4,6,2033],[1,5,7,2033],[2,6,7,2033],[3,7,7,2033],[4,1,7,2033],[5,2,7,2033],[6,3,7,2033],[7,4,7,2033],[8,5,7,2033],[9,6,7,2033],[10,7,7,2033],[11,1,7,2033],[12,2,7,2033],[13,3,7,2033],[14,4,7,2033],[15,5,7,2033],[16,6,7,2033],[17,7,7,2033],[18,1,7,2033],[19,2,7,2033],[20,3,7,2033],[21,4,7,2033],[22,5,7,2033],[23,6,7,2033],[24,7,7,2033],[25,1,7,2033],[26,2,7,2033],[27,3,7,2033],[28,4,7,2033],[29,5,7,2033],[30,6,7,2033],[31,7,7,2033],[1,1,8,2033],[2,2,8,2033],[3,3,8,2033],[4,4,8,2033],[5,5,8,2033],[6,6,8,2033],[7,7,8,2033],[8,1,8,2033],[9,2,8,2033],[10,3,8,2033],[11,4,8,2033],[12,5,8,2033],[13,6,8,2033],[14,7,8,2033],[15,1,8,2033],[16,2,8,2033],[17,3,8,2033],[18,4,8,2033],[19,5,8,2033],[20,6,8,2033],[21,7,8,2033],[22,1,8,2033],[23,2,8,2033],[24,3,8,2033],[25,4,8,2033],[26,5,8,2033],[27,6,8,2033],[28,7,8,2033],[29,1,8,2033],[30,2,8,2033],[31,3,8,2033],[1,4,9,2033],[2,5,9,2033],[3,6,9,2033],[4,7,9,2033],[5,1,9,2033],[6,2,9,2033],[7,3,9,2033],[8,4,9,2033],[9,5,9,2033],[10,6,9,2033],[11,7,9,2033],[12,1,9,2033],[13,2,9,2033],[14,3,9,2033],[15,4,9,2033],[16,5,9,2033],[17,6,9,2033],[18,7,9,2033],[19,1,9,2033],[20,2,9,2033],[21,3,9,2033],[22,4,9,2033],[23,5,9,2033],[24,6,9,2033],[25,7,9,2033],[26,1,9,2033],[27,2,9,2033],[28,3,9,2033],[29,4,9,2033],[30,5,9,2033],[1,6,10,2033],[2,7,10,2033],[3,1,10,2033],[4,2,10,2033],[5,3,10,2033],[6,4,10,2033],[7,5,10,2033],[8,6,10,2033],[9,7,10,2033],[10,1,10,2033],[11,2,10,2033],[12,3,10,2033],[13,4,10,2033],[14,5,10,2033],[15,6,10,2033],[16,7,10,2033],[17,1,10,2033],[18,2,10,2033],[19,3,10,2033],[20,4,10,2033],[21,5,10,2033],[22,6,10,2033],[23,7,10,2033],[24,1,10,2033],[25,2,10,2033],[26,3,10,2033],[27,4,10,2033],[28,5,10,2033],[29,6,10,2033],[30,7,10,2033],[31,1,10,2033],[1,2,11,2033],[2,3,11,2033],[3,4,11,2033],[4,5,11,2033],[5,6,11,2033],[6,7,11,2033],[7,1,11,2033],[8,2,11,2033],[9,3,11,2033],[10,4,11,2033],[11,5,11,2033],[12,6,11,2033],[13,7,11,2033],[14,1,11,2033],[15,2,11,2033],[16,3,11,2033],[17,4,11,2033],[18,5,11,2033],[19,6,11,2033],[20,7,11,2033],[21,1,11,2033],[22,2,11,2033],[23,3,11,2033],[24,4,11,2033],[25,5,11,2033],[26,6,11,2033],[27,7,11,2033],[28,1,11,2033],[29,2,11,2033],[30,3,11,2033],[1,4,12,2033],[2,5,12,2033],[3,6,12,2033],[4,7,12,2033],[5,1,12,2033],[6,2,12,2033],[7,3,12,2033],[8,4,12,2033],[9,5,12,2033],[10,6,12,2033],[11,7,12,2033],[12,1,12,2033],[13,2,12,2033],[14,3,12,2033],[15,4,12,2033],[16,5,12,2033],[17,6,12,2033],[18,7,12,2033],[19,1,12,2033],[20,2,12,2033],[21,3,12,2033],[22,4,12,2033],[23,5,12,2033],[24,6,12,2033],[25,7,12,2033],[26,1,12,2033],[27,2,12,2033],[28,3,12,2033],[29,4,12,2033],[30,5,12,2033],[31,6,12,2033],[1,7,1,2034],[2,1,1,2034],[3,2,1,2034],[4,3,1,2034],[5,4,1,2034],[6,5,1,2034],[7,6,1,2034],[8,7,1,2034],[9,1,1,2034],[10,2,1,2034],[11,3,1,2034],[12,4,1,2034],[13,5,1,2034],[14,6,1,2034],[15,7,1,2034],[16,1,1,2034],[17,2,1,2034],[18,3,1,2034],[19,4,1,2034],[20,5,1,2034],[21,6,1,2034],[22,7,1,2034],[23,1,1,2034],[24,2,1,2034],[25,3,1,2034],[26,4,1,2034],[27,5,1,2034],[28,6,1,2034],[29,7,1,2034],[30,1,1,2034],[31,2,1,2034],[1,3,2,2034],[2,4,2,2034],[3,5,2,2034],[4,6,2,2034],[5,7,2,2034],[6,1,2,2034],[7,2,2,2034],[8,3,2,2034],[9,4,2,2034],[10,5,2,2034],[11,6,2,2034],[12,7,2,2034],[13,1,2,2034],[14,2,2,2034],[15,3,2,2034],[16,4,2,2034],[17,5,2,2034],[18,6,2,2034],[19,7,2,2034],[20,1,2,2034],[21,2,2,2034],[22,3,2,2034],[23,4,2,2034],[24,5,2,2034],[25,6,2,2034],[26,7,2,2034],[27,1,2,2034],[28,2,2,2034],[1,3,3,2034],[2,4,3,2034],[3,5,3,2034],[4,6,3,2034],[5,7,3,2034],[6,1,3,2034],[7,2,3,2034],[8,3,3,2034],[9,4,3,2034],[10,5,3,2034],[11,6,3,2034],[12,7,3,2034],[13,1,3,2034],[14,2,3,2034],[15,3,3,2034],[16,4,3,2034],[17,5,3,2034],[18,6,3,2034],[19,7,3,2034],[20,1,3,2034],[21,2,3,2034],[22,3,3,2034],[23,4,3,2034],[24,5,3,2034],[25,6,3,2034],[26,7,3,2034],[27,1,3,2034],[28,2,3,2034],[29,3,3,2034],[30,4,3,2034],[31,5,3,2034],[1,6,4,2034],[2,7,4,2034],[3,1,4,2034],[4,2,4,2034],[5,3,4,2034],[6,4,4,2034],[7,5,4,2034],[8,6,4,2034],[9,7,4,2034],[10,1,4,2034],[11,2,4,2034],[12,3,4,2034],[13,4,4,2034],[14,5,4,2034],[15,6,4,2034],[16,7,4,2034],[17,1,4,2034],[18,2,4,2034],[19,3,4,2034],[20,4,4,2034],[21,5,4,2034],[22,6,4,2034],[23,7,4,2034],[24,1,4,2034],[25,2,4,2034],[26,3,4,2034],[27,4,4,2034],[28,5,4,2034],[29,6,4,2034],[30,7,4,2034],[1,1,5,2034],[2,2,5,2034],[3,3,5,2034],[4,4,5,2034],[5,5,5,2034],[6,6,5,2034],[7,7,5,2034],[8,1,5,2034],[9,2,5,2034],[10,3,5,2034],[11,4,5,2034],[12,5,5,2034],[13,6,5,2034],[14,7,5,2034],[15,1,5,2034],[16,2,5,2034],[17,3,5,2034],[18,4,5,2034],[19,5,5,2034],[20,6,5,2034],[21,7,5,2034],[22,1,5,2034],[23,2,5,2034],[24,3,5,2034],[25,4,5,2034],[26,5,5,2034],[27,6,5,2034],[28,7,5,2034],[29,1,5,2034],[30,2,5,2034],[31,3,5,2034],[1,4,6,2034],[2,5,6,2034],[3,6,6,2034],[4,7,6,2034],[5,1,6,2034],[6,2,6,2034],[7,3,6,2034],[8,4,6,2034],[9,5,6,2034],[10,6,6,2034],[11,7,6,2034],[12,1,6,2034],[13,2,6,2034],[14,3,6,2034],[15,4,6,2034],[16,5,6,2034],[17,6,6,2034],[18,7,6,2034],[19,1,6,2034],[20,2,6,2034],[21,3,6,2034],[22,4,6,2034],[23,5,6,2034],[24,6,6,2034],[25,7,6,2034],[26,1,6,2034],[27,2,6,2034],[28,3,6,2034],[29,4,6,2034],[30,5,6,2034],[1,6,7,2034],[2,7,7,2034],[3,1,7,2034],[4,2,7,2034],[5,3,7,2034],[6,4,7,2034],[7,5,7,2034],[8,6,7,2034],[9,7,7,2034],[10,1,7,2034],[11,2,7,2034],[12,3,7,2034],[13,4,7,2034],[14,5,7,2034],[15,6,7,2034],[16,7,7,2034],[17,1,7,2034],[18,2,7,2034],[19,3,7,2034],[20,4,7,2034],[21,5,7,2034],[22,6,7,2034],[23,7,7,2034],[24,1,7,2034],[25,2,7,2034],[26,3,7,2034],[27,4,7,2034],[28,5,7,2034],[29,6,7,2034],[30,7,7,2034],[31,1,7,2034],[1,2,8,2034],[2,3,8,2034],[3,4,8,2034],[4,5,8,2034],[5,6,8,2034],[6,7,8,2034],[7,1,8,2034],[8,2,8,2034],[9,3,8,2034],[10,4,8,2034],[11,5,8,2034],[12,6,8,2034],[13,7,8,2034],[14,1,8,2034],[15,2,8,2034],[16,3,8,2034],[17,4,8,2034],[18,5,8,2034],[19,6,8,2034],[20,7,8,2034],[21,1,8,2034],[22,2,8,2034],[23,3,8,2034],[24,4,8,2034],[25,5,8,2034],[26,6,8,2034],[27,7,8,2034],[28,1,8,2034],[29,2,8,2034],[30,3,8,2034],[31,4,8,2034],[1,5,9,2034],[2,6,9,2034],[3,7,9,2034],[4,1,9,2034],[5,2,9,2034],[6,3,9,2034],[7,4,9,2034],[8,5,9,2034],[9,6,9,2034],[10,7,9,2034],[11,1,9,2034],[12,2,9,2034],[13,3,9,2034],[14,4,9,2034],[15,5,9,2034],[16,6,9,2034],[17,7,9,2034],[18,1,9,2034],[19,2,9,2034],[20,3,9,2034],[21,4,9,2034],[22,5,9,2034],[23,6,9,2034],[24,7,9,2034],[25,1,9,2034],[26,2,9,2034],[27,3,9,2034],[28,4,9,2034],[29,5,9,2034],[30,6,9,2034],[1,7,10,2034],[2,1,10,2034],[3,2,10,2034],[4,3,10,2034],[5,4,10,2034],[6,5,10,2034],[7,6,10,2034],[8,7,10,2034],[9,1,10,2034],[10,2,10,2034],[11,3,10,2034],[12,4,10,2034],[13,5,10,2034],[14,6,10,2034],[15,7,10,2034],[16,1,10,2034],[17,2,10,2034],[18,3,10,2034],[19,4,10,2034],[20,5,10,2034],[21,6,10,2034],[22,7,10,2034],[23,1,10,2034],[24,2,10,2034],[25,3,10,2034],[26,4,10,2034],[27,5,10,2034],[28,6,10,2034],[29,7,10,2034],[30,1,10,2034],[31,2,10,2034],[1,3,11,2034],[2,4,11,2034],[3,5,11,2034],[4,6,11,2034],[5,7,11,2034],[6,1,11,2034],[7,2,11,2034],[8,3,11,2034],[9,4,11,2034],[10,5,11,2034],[11,6,11,2034],[12,7,11,2034],[13,1,11,2034],[14,2,11,2034],[15,3,11,2034],[16,4,11,2034],[17,5,11,2034],[18,6,11,2034],[19,7,11,2034],[20,1,11,2034],[21,2,11,2034],[22,3,11,2034],[23,4,11,2034],[24,5,11,2034],[25,6,11,2034],[26,7,11,2034],[27,1,11,2034],[28,2,11,2034],[29,3,11,2034],[30,4,11,2034],[1,5,12,2034],[2,6,12,2034],[3,7,12,2034],[4,1,12,2034],[5,2,12,2034],[6,3,12,2034],[7,4,12,2034],[8,5,12,2034],[9,6,12,2034],[10,7,12,2034],[11,1,12,2034],[12,2,12,2034],[13,3,12,2034],[14,4,12,2034],[15,5,12,2034],[16,6,12,2034],[17,7,12,2034],[18,1,12,2034],[19,2,12,2034],[20,3,12,2034],[21,4,12,2034],[22,5,12,2034],[23,6,12,2034],[24,7,12,2034],[25,1,12,2034],[26,2,12,2034],[27,3,12,2034],[28,4,12,2034],[29,5,12,2034],[30,6,12,2034],[31,7,12,2034],[1,1,1,2035],[2,2,1,2035],[3,3,1,2035],[4,4,1,2035],[5,5,1,2035],[6,6,1,2035],[7,7,1,2035],[8,1,1,2035],[9,2,1,2035],[10,3,1,2035],[11,4,1,2035],[12,5,1,2035],[13,6,1,2035],[14,7,1,2035],[15,1,1,2035],[16,2,1,2035],[17,3,1,2035],[18,4,1,2035],[19,5,1,2035],[20,6,1,2035],[21,7,1,2035],[22,1,1,2035],[23,2,1,2035],[24,3,1,2035],[25,4,1,2035],[26,5,1,2035],[27,6,1,2035],[28,7,1,2035],[29,1,1,2035],[30,2,1,2035],[31,3,1,2035],[1,4,2,2035],[2,5,2,2035],[3,6,2,2035],[4,7,2,2035],[5,1,2,2035],[6,2,2,2035],[7,3,2,2035],[8,4,2,2035],[9,5,2,2035],[10,6,2,2035],[11,7,2,2035],[12,1,2,2035],[13,2,2,2035],[14,3,2,2035],[15,4,2,2035],[16,5,2,2035],[17,6,2,2035],[18,7,2,2035],[19,1,2,2035],[20,2,2,2035],[21,3,2,2035],[22,4,2,2035],[23,5,2,2035],[24,6,2,2035],[25,7,2,2035],[26,1,2,2035],[27,2,2,2035],[28,3,2,2035],[1,4,3,2035],[2,5,3,2035],[3,6,3,2035],[4,7,3,2035],[5,1,3,2035],[6,2,3,2035],[7,3,3,2035],[8,4,3,2035],[9,5,3,2035],[10,6,3,2035],[11,7,3,2035],[12,1,3,2035],[13,2,3,2035],[14,3,3,2035],[15,4,3,2035],[16,5,3,2035],[17,6,3,2035],[18,7,3,2035],[19,1,3,2035],[20,2,3,2035],[21,3,3,2035],[22,4,3,2035],[23,5,3,2035],[24,6,3,2035],[25,7,3,2035],[26,1,3,2035],[27,2,3,2035],[28,3,3,2035],[29,4,3,2035],[30,5,3,2035],[31,6,3,2035],[1,7,4,2035],[2,1,4,2035],[3,2,4,2035],[4,3,4,2035],[5,4,4,2035],[6,5,4,2035],[7,6,4,2035],[8,7,4,2035],[9,1,4,2035],[10,2,4,2035],[11,3,4,2035],[12,4,4,2035],[13,5,4,2035],[14,6,4,2035],[15,7,4,2035],[16,1,4,2035],[17,2,4,2035],[18,3,4,2035],[19,4,4,2035],[20,5,4,2035],[21,6,4,2035],[22,7,4,2035],[23,1,4,2035],[24,2,4,2035],[25,3,4,2035],[26,4,4,2035],[27,5,4,2035],[28,6,4,2035],[29,7,4,2035],[30,1,4,2035],[1,2,5,2035],[2,3,5,2035],[3,4,5,2035],[4,5,5,2035],[5,6,5,2035],[6,7,5,2035],[7,1,5,2035],[8,2,5,2035],[9,3,5,2035],[10,4,5,2035],[11,5,5,2035],[12,6,5,2035],[13,7,5,2035],[14,1,5,2035],[15,2,5,2035],[16,3,5,2035],[17,4,5,2035],[18,5,5,2035],[19,6,5,2035],[20,7,5,2035],[21,1,5,2035],[22,2,5,2035],[23,3,5,2035],[24,4,5,2035],[25,5,5,2035],[26,6,5,2035],[27,7,5,2035],[28,1,5,2035],[29,2,5,2035],[30,3,5,2035],[31,4,5,2035],[1,5,6,2035],[2,6,6,2035],[3,7,6,2035],[4,1,6,2035],[5,2,6,2035],[6,3,6,2035],[7,4,6,2035],[8,5,6,2035],[9,6,6,2035],[10,7,6,2035],[11,1,6,2035],[12,2,6,2035],[13,3,6,2035],[14,4,6,2035],[15,5,6,2035],[16,6,6,2035],[17,7,6,2035],[18,1,6,2035],[19,2,6,2035],[20,3,6,2035],[21,4,6,2035],[22,5,6,2035],[23,6,6,2035],[24,7,6,2035],[25,1,6,2035],[26,2,6,2035],[27,3,6,2035],[28,4,6,2035],[29,5,6,2035],[30,6,6,2035],[1,7,7,2035],[2,1,7,2035],[3,2,7,2035],[4,3,7,2035],[5,4,7,2035],[6,5,7,2035],[7,6,7,2035],[8,7,7,2035],[9,1,7,2035],[10,2,7,2035],[11,3,7,2035],[12,4,7,2035],[13,5,7,2035],[14,6,7,2035],[15,7,7,2035],[16,1,7,2035],[17,2,7,2035],[18,3,7,2035],[19,4,7,2035],[20,5,7,2035],[21,6,7,2035],[22,7,7,2035],[23,1,7,2035],[24,2,7,2035],[25,3,7,2035],[26,4,7,2035],[27,5,7,2035],[28,6,7,2035],[29,7,7,2035],[30,1,7,2035],[31,2,7,2035],[1,3,8,2035],[2,4,8,2035],[3,5,8,2035],[4,6,8,2035],[5,7,8,2035],[6,1,8,2035],[7,2,8,2035],[8,3,8,2035],[9,4,8,2035],[10,5,8,2035],[11,6,8,2035],[12,7,8,2035],[13,1,8,2035],[14,2,8,2035],[15,3,8,2035],[16,4,8,2035],[17,5,8,2035],[18,6,8,2035],[19,7,8,2035],[20,1,8,2035],[21,2,8,2035],[22,3,8,2035],[23,4,8,2035],[24,5,8,2035],[25,6,8,2035],[26,7,8,2035],[27,1,8,2035],[28,2,8,2035],[29,3,8,2035],[30,4,8,2035],[31,5,8,2035],[1,6,9,2035],[2,7,9,2035],[3,1,9,2035],[4,2,9,2035],[5,3,9,2035],[6,4,9,2035],[7,5,9,2035],[8,6,9,2035],[9,7,9,2035],[10,1,9,2035],[11,2,9,2035],[12,3,9,2035],[13,4,9,2035],[14,5,9,2035],[15,6,9,2035],[16,7,9,2035],[17,1,9,2035],[18,2,9,2035],[19,3,9,2035],[20,4,9,2035],[21,5,9,2035],[22,6,9,2035],[23,7,9,2035],[24,1,9,2035],[25,2,9,2035],[26,3,9,2035],[27,4,9,2035],[28,5,9,2035],[29,6,9,2035],[30,7,9,2035],[1,1,10,2035],[2,2,10,2035],[3,3,10,2035],[4,4,10,2035],[5,5,10,2035],[6,6,10,2035],[7,7,10,2035],[8,1,10,2035],[9,2,10,2035],[10,3,10,2035],[11,4,10,2035],[12,5,10,2035],[13,6,10,2035],[14,7,10,2035],[15,1,10,2035],[16,2,10,2035],[17,3,10,2035],[18,4,10,2035],[19,5,10,2035],[20,6,10,2035],[21,7,10,2035],[22,1,10,2035],[23,2,10,2035],[24,3,10,2035],[25,4,10,2035],[26,5,10,2035],[27,6,10,2035],[28,7,10,2035],[29,1,10,2035],[30,2,10,2035],[31,3,10,2035],[1,4,11,2035],[2,5,11,2035],[3,6,11,2035],[4,7,11,2035],[5,1,11,2035],[6,2,11,2035],[7,3,11,2035],[8,4,11,2035],[9,5,11,2035],[10,6,11,2035],[11,7,11,2035],[12,1,11,2035],[13,2,11,2035],[14,3,11,2035],[15,4,11,2035],[16,5,11,2035],[17,6,11,2035],[18,7,11,2035],[19,1,11,2035],[20,2,11,2035],[21,3,11,2035],[22,4,11,2035],[23,5,11,2035],[24,6,11,2035],[25,7,11,2035],[26,1,11,2035],[27,2,11,2035],[28,3,11,2035],[29,4,11,2035],[30,5,11,2035],[1,6,12,2035],[2,7,12,2035],[3,1,12,2035],[4,2,12,2035],[5,3,12,2035],[6,4,12,2035],[7,5,12,2035],[8,6,12,2035],[9,7,12,2035],[10,1,12,2035],[11,2,12,2035],[12,3,12,2035],[13,4,12,2035],[14,5,12,2035],[15,6,12,2035],[16,7,12,2035],[17,1,12,2035],[18,2,12,2035],[19,3,12,2035],[20,4,12,2035],[21,5,12,2035],[22,6,12,2035],[23,7,12,2035],[24,1,12,2035],[25,2,12,2035],[26,3,12,2035],[27,4,12,2035],[28,5,12,2035],[29,6,12,2035],[30,7,12,2035],[31,1,12,2035],[1,2,1,2036],[2,3,1,2036],[3,4,1,2036],[4,5,1,2036],[5,6,1,2036],[6,7,1,2036],[7,1,1,2036],[8,2,1,2036],[9,3,1,2036],[10,4,1,2036],[11,5,1,2036],[12,6,1,2036],[13,7,1,2036],[14,1,1,2036],[15,2,1,2036],[16,3,1,2036],[17,4,1,2036],[18,5,1,2036],
+				[19,6,1,2036],[20,7,1,2036],[21,1,1,2036],[22,2,1,2036],[23,3,1,2036],[24,4,1,2036],[25,5,1,2036],[26,6,1,2036],[27,7,1,2036],[28,1,1,2036],[29,2,1,2036],[30,3,1,2036],[31,4,1,2036],[1,5,2,2036],[2,6,2,2036],[3,7,2,2036],[4,1,2,2036],[5,2,2,2036],[6,3,2,2036],[7,4,2,2036],[8,5,2,2036],[9,6,2,2036],[10,7,2,2036],[11,1,2,2036],[12,2,2,2036],[13,3,2,2036],[14,4,2,2036],[15,5,2,2036],[16,6,2,2036],[17,7,2,2036],[18,1,2,2036],[19,2,2,2036],[20,3,2,2036],[21,4,2,2036],[22,5,2,2036],[23,6,2,2036],[24,7,2,2036],[25,1,2,2036],[26,2,2,2036],[27,3,2,2036],[28,4,2,2036],[29,5,2,2036],[1,6,3,2036],[2,7,3,2036],[3,1,3,2036],[4,2,3,2036],[5,3,3,2036],[6,4,3,2036],[7,5,3,2036],[8,6,3,2036],[9,7,3,2036],[10,1,3,2036],[11,2,3,2036],[12,3,3,2036],[13,4,3,2036],[14,5,3,2036],[15,6,3,2036],[16,7,3,2036],[17,1,3,2036],[18,2,3,2036],[19,3,3,2036],[20,4,3,2036],[21,5,3,2036],[22,6,3,2036],[23,7,3,2036],[24,1,3,2036],[25,2,3,2036],[26,3,3,2036],[27,4,3,2036],[28,5,3,2036],[29,6,3,2036],[30,7,3,2036],[31,1,3,2036],[1,2,4,2036],[2,3,4,2036],[3,4,4,2036],[4,5,4,2036],[5,6,4,2036],[6,7,4,2036],[7,1,4,2036],[8,2,4,2036],[9,3,4,2036],[10,4,4,2036],[11,5,4,2036],[12,6,4,2036],[13,7,4,2036],[14,1,4,2036],[15,2,4,2036],[16,3,4,2036],[17,4,4,2036],[18,5,4,2036],[19,6,4,2036],[20,7,4,2036],[21,1,4,2036],[22,2,4,2036],[23,3,4,2036],[24,4,4,2036],[25,5,4,2036],[26,6,4,2036],[27,7,4,2036],[28,1,4,2036],[29,2,4,2036],[30,3,4,2036],[1,4,5,2036],[2,5,5,2036],[3,6,5,2036],[4,7,5,2036],[5,1,5,2036],[6,2,5,2036],[7,3,5,2036],[8,4,5,2036],[9,5,5,2036],[10,6,5,2036],[11,7,5,2036],[12,1,5,2036],[13,2,5,2036],[14,3,5,2036],[15,4,5,2036],[16,5,5,2036],[17,6,5,2036],[18,7,5,2036],[19,1,5,2036],[20,2,5,2036],[21,3,5,2036],[22,4,5,2036],[23,5,5,2036],[24,6,5,2036],[25,7,5,2036],[26,1,5,2036],[27,2,5,2036],[28,3,5,2036],[29,4,5,2036],[30,5,5,2036],[31,6,5,2036],[1,7,6,2036],[2,1,6,2036],[3,2,6,2036],[4,3,6,2036],[5,4,6,2036],[6,5,6,2036],[7,6,6,2036],[8,7,6,2036],[9,1,6,2036],[10,2,6,2036],[11,3,6,2036],[12,4,6,2036],[13,5,6,2036],[14,6,6,2036],[15,7,6,2036],[16,1,6,2036],[17,2,6,2036],[18,3,6,2036],[19,4,6,2036],[20,5,6,2036],[21,6,6,2036],[22,7,6,2036],[23,1,6,2036],[24,2,6,2036],[25,3,6,2036],[26,4,6,2036],[27,5,6,2036],[28,6,6,2036],[29,7,6,2036],[30,1,6,2036],[1,2,7,2036],[2,3,7,2036],[3,4,7,2036],[4,5,7,2036],[5,6,7,2036],[6,7,7,2036],[7,1,7,2036],[8,2,7,2036],[9,3,7,2036],[10,4,7,2036],[11,5,7,2036],[12,6,7,2036],[13,7,7,2036],[14,1,7,2036],[15,2,7,2036],[16,3,7,2036],[17,4,7,2036],[18,5,7,2036],[19,6,7,2036],[20,7,7,2036],[21,1,7,2036],[22,2,7,2036],[23,3,7,2036],[24,4,7,2036],[25,5,7,2036],[26,6,7,2036],[27,7,7,2036],[28,1,7,2036],[29,2,7,2036],[30,3,7,2036],[31,4,7,2036],[1,5,8,2036],[2,6,8,2036],[3,7,8,2036],[4,1,8,2036],[5,2,8,2036],[6,3,8,2036],[7,4,8,2036],[8,5,8,2036],[9,6,8,2036],[10,7,8,2036],[11,1,8,2036],[12,2,8,2036],[13,3,8,2036],[14,4,8,2036],[15,5,8,2036],[16,6,8,2036],[17,7,8,2036],[18,1,8,2036],[19,2,8,2036],[20,3,8,2036],[21,4,8,2036],[22,5,8,2036],[23,6,8,2036],[24,7,8,2036],[25,1,8,2036],[26,2,8,2036],[27,3,8,2036],[28,4,8,2036],[29,5,8,2036],[30,6,8,2036],[31,7,8,2036],[1,1,9,2036],[2,2,9,2036],[3,3,9,2036],[4,4,9,2036],[5,5,9,2036],[6,6,9,2036],[7,7,9,2036],[8,1,9,2036],[9,2,9,2036],[10,3,9,2036],[11,4,9,2036],[12,5,9,2036],[13,6,9,2036],[14,7,9,2036],[15,1,9,2036],[16,2,9,2036],[17,3,9,2036],[18,4,9,2036],[19,5,9,2036],[20,6,9,2036],[21,7,9,2036],[22,1,9,2036],[23,2,9,2036],[24,3,9,2036],[25,4,9,2036],[26,5,9,2036],[27,6,9,2036],[28,7,9,2036],[29,1,9,2036],[30,2,9,2036],[1,3,10,2036],[2,4,10,2036],[3,5,10,2036],[4,6,10,2036],[5,7,10,2036],[6,1,10,2036],[7,2,10,2036],[8,3,10,2036],[9,4,10,2036],[10,5,10,2036],[11,6,10,2036],[12,7,10,2036],[13,1,10,2036],[14,2,10,2036],[15,3,10,2036],[16,4,10,2036],[17,5,10,2036],[18,6,10,2036],[19,7,10,2036],[20,1,10,2036],[21,2,10,2036],[22,3,10,2036],[23,4,10,2036],[24,5,10,2036],[25,6,10,2036],[26,7,10,2036],[27,1,10,2036],[28,2,10,2036],[29,3,10,2036],[30,4,10,2036],[31,5,10,2036],[1,6,11,2036],[2,7,11,2036],[3,1,11,2036],[4,2,11,2036],[5,3,11,2036],[6,4,11,2036],[7,5,11,2036],[8,6,11,2036],[9,7,11,2036],[10,1,11,2036],[11,2,11,2036],[12,3,11,2036],[13,4,11,2036],[14,5,11,2036],[15,6,11,2036],[16,7,11,2036],[17,1,11,2036],[18,2,11,2036],[19,3,11,2036],[20,4,11,2036],[21,5,11,2036],[22,6,11,2036],[23,7,11,2036],[24,1,11,2036],[25,2,11,2036],[26,3,11,2036],[27,4,11,2036],[28,5,11,2036],[29,6,11,2036],[30,7,11,2036],[1,1,12,2036],[2,2,12,2036],[3,3,12,2036],[4,4,12,2036],[5,5,12,2036],[6,6,12,2036],[7,7,12,2036],[8,1,12,2036],[9,2,12,2036],[10,3,12,2036],[11,4,12,2036],[12,5,12,2036],[13,6,12,2036],[14,7,12,2036],[15,1,12,2036],[16,2,12,2036],[17,3,12,2036],[18,4,12,2036],[19,5,12,2036],[20,6,12,2036],[21,7,12,2036],[22,1,12,2036],[23,2,12,2036],[24,3,12,2036],[25,4,12,2036],[26,5,12,2036],[27,6,12,2036],[28,7,12,2036],[29,1,12,2036],[30,2,12,2036],[31,3,12,2036],[1,4,1,2037],[2,5,1,2037],[3,6,1,2037],[4,7,1,2037],[5,1,1,2037],[6,2,1,2037],[7,3,1,2037],[8,4,1,2037],[9,5,1,2037],[10,6,1,2037],[11,7,1,2037],[12,1,1,2037],[13,2,1,2037],[14,3,1,2037],[15,4,1,2037],[16,5,1,2037],[17,6,1,2037],[18,7,1,2037],[19,1,1,2037],[20,2,1,2037],[21,3,1,2037],[22,4,1,2037],[23,5,1,2037],[24,6,1,2037],[25,7,1,2037],[26,1,1,2037],[27,2,1,2037],[28,3,1,2037],[29,4,1,2037],[30,5,1,2037],[31,6,1,2037],[1,7,2,2037],[2,1,2,2037],[3,2,2,2037],[4,3,2,2037],[5,4,2,2037],[6,5,2,2037],[7,6,2,2037],[8,7,2,2037],[9,1,2,2037],[10,2,2,2037],[11,3,2,2037],[12,4,2,2037],[13,5,2,2037],[14,6,2,2037],[15,7,2,2037],[16,1,2,2037],[17,2,2,2037],[18,3,2,2037],[19,4,2,2037],[20,5,2,2037],[21,6,2,2037],[22,7,2,2037],[23,1,2,2037],[24,2,2,2037],[25,3,2,2037],[26,4,2,2037],[27,5,2,2037],[28,6,2,2037],[1,7,3,2037],[2,1,3,2037],[3,2,3,2037],[4,3,3,2037],[5,4,3,2037],[6,5,3,2037],[7,6,3,2037],[8,7,3,2037],[9,1,3,2037],[10,2,3,2037],[11,3,3,2037],[12,4,3,2037],[13,5,3,2037],[14,6,3,2037],[15,7,3,2037],[16,1,3,2037],[17,2,3,2037],[18,3,3,2037],[19,4,3,2037],[20,5,3,2037],[21,6,3,2037],[22,7,3,2037],[23,1,3,2037],[24,2,3,2037],[25,3,3,2037],[26,4,3,2037],[27,5,3,2037],[28,6,3,2037],[29,7,3,2037],[30,1,3,2037],[31,2,3,2037],[1,3,4,2037],[2,4,4,2037],[3,5,4,2037],[4,6,4,2037],[5,7,4,2037],[6,1,4,2037],[7,2,4,2037],[8,3,4,2037],[9,4,4,2037],[10,5,4,2037],[11,6,4,2037],[12,7,4,2037],[13,1,4,2037],[14,2,4,2037],[15,3,4,2037],[16,4,4,2037],[17,5,4,2037],[18,6,4,2037],[19,7,4,2037],[20,1,4,2037],[21,2,4,2037],[22,3,4,2037],[23,4,4,2037],[24,5,4,2037],[25,6,4,2037],[26,7,4,2037],[27,1,4,2037],[28,2,4,2037],[29,3,4,2037],[30,4,4,2037],[1,5,5,2037],[2,6,5,2037],[3,7,5,2037],[4,1,5,2037],[5,2,5,2037],[6,3,5,2037],[7,4,5,2037],[8,5,5,2037],[9,6,5,2037],[10,7,5,2037],[11,1,5,2037],[12,2,5,2037],[13,3,5,2037],[14,4,5,2037],[15,5,5,2037],[16,6,5,2037],[17,7,5,2037],[18,1,5,2037],[19,2,5,2037],[20,3,5,2037],[21,4,5,2037],[22,5,5,2037],[23,6,5,2037],[24,7,5,2037],[25,1,5,2037],[26,2,5,2037],[27,3,5,2037],[28,4,5,2037],[29,5,5,2037],[30,6,5,2037],[31,7,5,2037],[1,1,6,2037],[2,2,6,2037],[3,3,6,2037],[4,4,6,2037],[5,5,6,2037],[6,6,6,2037],[7,7,6,2037],[8,1,6,2037],[9,2,6,2037],[10,3,6,2037],[11,4,6,2037],[12,5,6,2037],[13,6,6,2037],[14,7,6,2037],[15,1,6,2037],[16,2,6,2037],[17,3,6,2037],[18,4,6,2037],[19,5,6,2037],[20,6,6,2037],[21,7,6,2037],[22,1,6,2037],[23,2,6,2037],[24,3,6,2037],[25,4,6,2037],[26,5,6,2037],[27,6,6,2037],[28,7,6,2037],[29,1,6,2037],[30,2,6,2037],[1,3,7,2037],[2,4,7,2037],[3,5,7,2037],[4,6,7,2037],[5,7,7,2037],[6,1,7,2037],[7,2,7,2037],[8,3,7,2037],[9,4,7,2037],[10,5,7,2037],[11,6,7,2037],[12,7,7,2037],[13,1,7,2037],[14,2,7,2037],[15,3,7,2037],[16,4,7,2037],[17,5,7,2037],[18,6,7,2037],[19,7,7,2037],[20,1,7,2037],[21,2,7,2037],[22,3,7,2037],[23,4,7,2037],[24,5,7,2037],[25,6,7,2037],[26,7,7,2037],[27,1,7,2037],[28,2,7,2037],[29,3,7,2037],[30,4,7,2037],[31,5,7,2037],[1,6,8,2037],[2,7,8,2037],[3,1,8,2037],[4,2,8,2037],[5,3,8,2037],[6,4,8,2037],[7,5,8,2037],[8,6,8,2037],[9,7,8,2037],[10,1,8,2037],[11,2,8,2037],[12,3,8,2037],[13,4,8,2037],[14,5,8,2037],[15,6,8,2037],[16,7,8,2037],[17,1,8,2037],[18,2,8,2037],[19,3,8,2037],[20,4,8,2037],[21,5,8,2037],[22,6,8,2037],[23,7,8,2037],[24,1,8,2037],[25,2,8,2037],[26,3,8,2037],[27,4,8,2037],[28,5,8,2037],[29,6,8,2037],[30,7,8,2037],[31,1,8,2037],[1,2,9,2037],[2,3,9,2037],[3,4,9,2037],[4,5,9,2037],[5,6,9,2037],[6,7,9,2037],[7,1,9,2037],[8,2,9,2037],[9,3,9,2037],[10,4,9,2037],[11,5,9,2037],[12,6,9,2037],[13,7,9,2037],[14,1,9,2037],[15,2,9,2037],[16,3,9,2037],[17,4,9,2037],[18,5,9,2037],[19,6,9,2037],[20,7,9,2037],[21,1,9,2037],[22,2,9,2037],[23,3,9,2037],[24,4,9,2037],[25,5,9,2037],[26,6,9,2037],[27,7,9,2037],[28,1,9,2037],[29,2,9,2037],[30,3,9,2037],[1,4,10,2037],[2,5,10,2037],[3,6,10,2037],[4,7,10,2037],[5,1,10,2037],[6,2,10,2037],[7,3,10,2037],[8,4,10,2037],[9,5,10,2037],[10,6,10,2037],[11,7,10,2037],[12,1,10,2037],[13,2,10,2037],[14,3,10,2037],[15,4,10,2037],[16,5,10,2037],[17,6,10,2037],[18,7,10,2037],[19,1,10,2037],[20,2,10,2037],[21,3,10,2037],[22,4,10,2037],[23,5,10,2037],[24,6,10,2037],[25,7,10,2037],[26,1,10,2037],[27,2,10,2037],[28,3,10,2037],[29,4,10,2037],[30,5,10,2037],[31,6,10,2037],[1,7,11,2037],[2,1,11,2037],[3,2,11,2037],[4,3,11,2037],[5,4,11,2037],[6,5,11,2037],[7,6,11,2037],[8,7,11,2037],[9,1,11,2037],[10,2,11,2037],[11,3,11,2037],[12,4,11,2037],[13,5,11,2037],[14,6,11,2037],[15,7,11,2037],[16,1,11,2037],[17,2,11,2037],[18,3,11,2037],[19,4,11,2037],[20,5,11,2037],[21,6,11,2037],[22,7,11,2037],[23,1,11,2037],[24,2,11,2037],[25,3,11,2037],[26,4,11,2037],[27,5,11,2037],[28,6,11,2037],[29,7,11,2037],[30,1,11,2037],[1,2,12,2037],[2,3,12,2037],[3,4,12,2037],[4,5,12,2037],[5,6,12,2037],[6,7,12,2037],[7,1,12,2037],[8,2,12,2037],[9,3,12,2037],[10,4,12,2037],
+				[11,5,12,2037],[12,6,12,2037],[13,7,12,2037],[14,1,12,2037],[15,2,12,2037],[16,3,12,2037],[17,4,12,2037],[18,5,12,2037],[19,6,12,2037],[20,7,12,2037],[21,1,12,2037],[22,2,12,2037],[23,3,12,2037],[24,4,12,2037],[25,5,12,2037],[26,6,12,2037],[27,7,12,2037],[28,1,12,2037],[29,2,12,2037],[30,3,12,2037],[31,4,12,2037],[1,5,1,2038],[2,6,1,2038],[3,7,1,2038],[4,1,1,2038],[5,2,1,2038],[6,3,1,2038],[7,4,1,2038],[8,5,1,2038],[9,6,1,2038],[10,7,1,2038],[11,1,1,2038],[12,2,1,2038],[13,3,1,2038],[14,4,1,2038],[15,5,1,2038],[16,6,1,2038],[17,7,1,2038],[18,1,1,2038],[19,2,1,2038],[20,3,1,2038],[21,4,1,2038],[22,5,1,2038],[23,6,1,2038],[24,7,1,2038],[25,1,1,2038],[26,2,1,2038],[27,3,1,2038],[28,4,1,2038],[29,5,1,2038],[30,6,1,2038],[31,7,1,2038],[1,1,2,2038],[2,2,2,2038],[3,3,2,2038],[4,4,2,2038],[5,5,2,2038],[6,6,2,2038],[7,7,2,2038],[8,1,2,2038],[9,2,2,2038],[10,3,2,2038],[11,4,2,2038],[12,5,2,2038],[13,6,2,2038],[14,7,2,2038],[15,1,2,2038],[16,2,2,2038],[17,3,2,2038],[18,4,2,2038],[19,5,2,2038],[20,6,2,2038],[21,7,2,2038],[22,1,2,2038],[23,2,2,2038],[24,3,2,2038],[25,4,2,2038],[26,5,2,2038],[27,6,2,2038],[28,7,2,2038],[1,1,3,2038],[2,2,3,2038],[3,3,3,2038],[4,4,3,2038],[5,5,3,2038],[6,6,3,2038],[7,7,3,2038],[8,1,3,2038],[9,2,3,2038],[10,3,3,2038],[11,4,3,2038],[12,5,3,2038],[13,6,3,2038],[14,7,3,2038],[15,1,3,2038],[16,2,3,2038],[17,3,3,2038],[18,4,3,2038],[19,5,3,2038],[20,6,3,2038],[21,7,3,2038],[22,1,3,2038],[23,2,3,2038],[24,3,3,2038],[25,4,3,2038],[26,5,3,2038],[27,6,3,2038],[28,7,3,2038],[29,1,3,2038],[30,2,3,2038],[31,3,3,2038],[1,4,4,2038],[2,5,4,2038],[3,6,4,2038],[4,7,4,2038],[5,1,4,2038],[6,2,4,2038],[7,3,4,2038],[8,4,4,2038],[9,5,4,2038],[10,6,4,2038],[11,7,4,2038],[12,1,4,2038],[13,2,4,2038],[14,3,4,2038],[15,4,4,2038],[16,5,4,2038],[17,6,4,2038],[18,7,4,2038],[19,1,4,2038],[20,2,4,2038],[21,3,4,2038],[22,4,4,2038],[23,5,4,2038],[24,6,4,2038],[25,7,4,2038],[26,1,4,2038],[27,2,4,2038],[28,3,4,2038],[29,4,4,2038],[30,5,4,2038],[1,6,5,2038],[2,7,5,2038],[3,1,5,2038],[4,2,5,2038],[5,3,5,2038],[6,4,5,2038],[7,5,5,2038],[8,6,5,2038],[9,7,5,2038],[10,1,5,2038],[11,2,5,2038],[12,3,5,2038],[13,4,5,2038],[14,5,5,2038],[15,6,5,2038],[16,7,5,2038],[17,1,5,2038],[18,2,5,2038],[19,3,5,2038],[20,4,5,2038],[21,5,5,2038],[22,6,5,2038],[23,7,5,2038],[24,1,5,2038],[25,2,5,2038],[26,3,5,2038],[27,4,5,2038],[28,5,5,2038],[29,6,5,2038],[30,7,5,2038],[31,1,5,2038],[1,2,6,2038],[2,3,6,2038],[3,4,6,2038],[4,5,6,2038],[5,6,6,2038],[6,7,6,2038],[7,1,6,2038],[8,2,6,2038],[9,3,6,2038],[10,4,6,2038],[11,5,6,2038],[12,6,6,2038],[13,7,6,2038],[14,1,6,2038],[15,2,6,2038],[16,3,6,2038],[17,4,6,2038],[18,5,6,2038],[19,6,6,2038],[20,7,6,2038],[21,1,6,2038],[22,2,6,2038],[23,3,6,2038],[24,4,6,2038],[25,5,6,2038],[26,6,6,2038],[27,7,6,2038],[28,1,6,2038],[29,2,6,2038],[30,3,6,2038],[1,4,7,2038],[2,5,7,2038],[3,6,7,2038],[4,7,7,2038],[5,1,7,2038],[6,2,7,2038],[7,3,7,2038],[8,4,7,2038],[9,5,7,2038],[10,6,7,2038],[11,7,7,2038],[12,1,7,2038],[13,2,7,2038],[14,3,7,2038],[15,4,7,2038],[16,5,7,2038],[17,6,7,2038],[18,7,7,2038],[19,1,7,2038],[20,2,7,2038],[21,3,7,2038],[22,4,7,2038],[23,5,7,2038],[24,6,7,2038],[25,7,7,2038],[26,1,7,2038],[27,2,7,2038],[28,3,7,2038],[29,4,7,2038],[30,5,7,2038],[31,6,7,2038],[1,7,8,2038],[2,1,8,2038],[3,2,8,2038],[4,3,8,2038],[5,4,8,2038],[6,5,8,2038],[7,6,8,2038],[8,7,8,2038],[9,1,8,2038],[10,2,8,2038],[11,3,8,2038],[12,4,8,2038],[13,5,8,2038],[14,6,8,2038],[15,7,8,2038],[16,1,8,2038],[17,2,8,2038],[18,3,8,2038],[19,4,8,2038],[20,5,8,2038],[21,6,8,2038],[22,7,8,2038],[23,1,8,2038],[24,2,8,2038],[25,3,8,2038],[26,4,8,2038],[27,5,8,2038],[28,6,8,2038],[29,7,8,2038],[30,1,8,2038],[31,2,8,2038],[1,3,9,2038],[2,4,9,2038],[3,5,9,2038],[4,6,9,2038],[5,7,9,2038],[6,1,9,2038],[7,2,9,2038],[8,3,9,2038],[9,4,9,2038],[10,5,9,2038],[11,6,9,2038],[12,7,9,2038],[13,1,9,2038],[14,2,9,2038],[15,3,9,2038],[16,4,9,2038],[17,5,9,2038],[18,6,9,2038],[19,7,9,2038],[20,1,9,2038],[21,2,9,2038],[22,3,9,2038],[23,4,9,2038],[24,5,9,2038],[25,6,9,2038],[26,7,9,2038],[27,1,9,2038],[28,2,9,2038],[29,3,9,2038],[30,4,9,2038],[1,5,10,2038],[2,6,10,2038],[3,7,10,2038],[4,1,10,2038],[5,2,10,2038],[6,3,10,2038],[7,4,10,2038],[8,5,10,2038],[9,6,10,2038],[10,7,10,2038],[11,1,10,2038],[12,2,10,2038],[13,3,10,2038],[14,4,10,2038],[15,5,10,2038],[16,6,10,2038],[17,7,10,2038],[18,1,10,2038],[19,2,10,2038],[20,3,10,2038],[21,4,10,2038],[22,5,10,2038],[23,6,10,2038],[24,7,10,2038],[25,1,10,2038],[26,2,10,2038],[27,3,10,2038],[28,4,10,2038],[29,5,10,2038],[30,6,10,2038],[31,7,10,2038],[1,1,11,2038],[2,2,11,2038],[3,3,11,2038],[4,4,11,2038],[5,5,11,2038],[6,6,11,2038],[7,7,11,2038],[8,1,11,2038],[9,2,11,2038],[10,3,11,2038],[11,4,11,2038],[12,5,11,2038],[13,6,11,2038],[14,7,11,2038],[15,1,11,2038],[16,2,11,2038],[17,3,11,2038],[18,4,11,2038],[19,5,11,2038],[20,6,11,2038],[21,7,11,2038],[22,1,11,2038],[23,2,11,2038],[24,3,11,2038],[25,4,11,2038],[26,5,11,2038],[27,6,11,2038],[28,7,11,2038],[29,1,11,2038],[30,2,11,2038],[1,3,12,2038],[2,4,12,2038],[3,5,12,2038],[4,6,12,2038],[5,7,12,2038],[6,1,12,2038],[7,2,12,2038],[8,3,12,2038],[9,4,12,2038],[10,5,12,2038],[11,6,12,2038],[12,7,12,2038],[13,1,12,2038],[14,2,12,2038],[15,3,12,2038],[16,4,12,2038],[17,5,12,2038],[18,6,12,2038],[19,7,12,2038],[20,1,12,2038],[21,2,12,2038],[22,3,12,2038],[23,4,12,2038],[24,5,12,2038],[25,6,12,2038],[26,7,12,2038],[27,1,12,2038],[28,2,12,2038],[29,3,12,2038],[30,4,12,2038],[31,5,12,2038],[1,6,1,2039],[2,7,1,2039],[3,1,1,2039],[4,2,1,2039],[5,3,1,2039],[6,4,1,2039],[7,5,1,2039],[8,6,1,2039],[9,7,1,2039],[10,1,1,2039],[11,2,1,2039],[12,3,1,2039],[13,4,1,2039],[14,5,1,2039],[15,6,1,2039],[16,7,1,2039],
+				[17,1,1,2039],[18,2,1,2039],[19,3,1,2039],[20,4,1,2039],[21,5,1,2039],[22,6,1,2039],[23,7,1,2039],[24,1,1,2039],[25,2,1,2039],[26,3,1,2039],[27,4,1,2039],[28,5,1,2039],[29,6,1,2039],[30,7,1,2039],[31,1,1,2039],[1,2,2,2039],[2,3,2,2039],[3,4,2,2039],[4,5,2,2039],[5,6,2,2039],[6,7,2,2039],[7,1,2,2039],[8,2,2,2039],[9,3,2,2039],[10,4,2,2039],[11,5,2,2039],[12,6,2,2039],[13,7,2,2039],[14,1,2,2039],[15,2,2,2039],[16,3,2,2039],[17,4,2,2039],[18,5,2,2039],[19,6,2,2039],[20,7,2,2039],[21,1,2,2039],[22,2,2,2039],[23,3,2,2039],[24,4,2,2039],[25,5,2,2039],[26,6,2,2039],[27,7,2,2039],[28,1,2,2039],[1,2,3,2039],[2,3,3,2039],[3,4,3,2039],[4,5,3,2039],[5,6,3,2039],[6,7,3,2039],[7,1,3,2039],[8,2,3,2039],[9,3,3,2039],[10,4,3,2039],[11,5,3,2039],[12,6,3,2039],[13,7,3,2039],[14,1,3,2039],[15,2,3,2039],[16,3,3,2039],[17,4,3,2039],[18,5,3,2039],[19,6,3,2039],[20,7,3,2039],[21,1,3,2039],[22,2,3,2039],[23,3,3,2039],[24,4,3,2039],[25,5,3,2039],[26,6,3,2039],[27,7,3,2039],[28,1,3,2039],[29,2,3,2039],[30,3,3,2039],[31,4,3,2039],[1,5,4,2039],[2,6,4,2039],[3,7,4,2039],[4,1,4,2039],[5,2,4,2039],[6,3,4,2039],[7,4,4,2039],[8,5,4,2039],[9,6,4,2039],[10,7,4,2039],[11,1,4,2039],[12,2,4,2039],[13,3,4,2039],[14,4,4,2039],[15,5,4,2039],[16,6,4,2039],[17,7,4,2039],[18,1,4,2039],[19,2,4,2039],[20,3,4,2039],[21,4,4,2039],[22,5,4,2039],[23,6,4,2039],[24,7,4,2039],[25,1,4,2039],[26,2,4,2039],[27,3,4,2039],[28,4,4,2039],[29,5,4,2039],[30,6,4,2039],[1,7,5,2039],[2,1,5,2039],[3,2,5,2039],[4,3,5,2039],[5,4,5,2039],[6,5,5,2039],[7,6,5,2039],[8,7,5,2039],[9,1,5,2039],[10,2,5,2039],[11,3,5,2039],[12,4,5,2039],[13,5,5,2039],[14,6,5,2039],[15,7,5,2039],[16,1,5,2039],[17,2,5,2039],[18,3,5,2039],[19,4,5,2039],[20,5,5,2039],[21,6,5,2039],[22,7,5,2039],[23,1,5,2039],[24,2,5,2039],[25,3,5,2039],[26,4,5,2039],[27,5,5,2039],[28,6,5,2039],[29,7,5,2039],[30,1,5,2039],[31,2,5,2039],[1,3,6,2039],[2,4,6,2039],[3,5,6,2039],[4,6,6,2039],[5,7,6,2039],[6,1,6,2039],[7,2,6,2039],[8,3,6,2039],[9,4,6,2039],[10,5,6,2039],[11,6,6,2039],[12,7,6,2039],[13,1,6,2039],[14,2,6,2039],[15,3,6,2039],[16,4,6,2039],[17,5,6,2039],[18,6,6,2039],[19,7,6,2039],[20,1,6,2039],[21,2,6,2039],[22,3,6,2039],[23,4,6,2039],[24,5,6,2039],[25,6,6,2039],[26,7,6,2039],[27,1,6,2039],[28,2,6,2039],[29,3,6,2039],[30,4,6,2039],[1,5,7,2039],[2,6,7,2039],[3,7,7,2039],[4,1,7,2039],[5,2,7,2039],[6,3,7,2039],[7,4,7,2039],[8,5,7,2039],[9,6,7,2039],[10,7,7,2039],[11,1,7,2039],[12,2,7,2039],[13,3,7,2039],[14,4,7,2039],[15,5,7,2039],[16,6,7,2039],[17,7,7,2039],[18,1,7,2039],[19,2,7,2039],[20,3,7,2039],[21,4,7,2039],[22,5,7,2039],[23,6,7,2039],[24,7,7,2039],[25,1,7,2039],[26,2,7,2039],[27,3,7,2039],[28,4,7,2039],[29,5,7,2039],[30,6,7,2039],[31,7,7,2039],[1,1,8,2039],[2,2,8,2039],[3,3,8,2039],[4,4,8,2039],[5,5,8,2039],[6,6,8,2039],[7,7,8,2039],[8,1,8,2039],[9,2,8,2039],[10,3,8,2039],[11,4,8,2039],[12,5,8,2039],[13,6,8,2039],[14,7,8,2039],[15,1,8,2039],[16,2,8,2039],[17,3,8,2039],[18,4,8,2039],[19,5,8,2039],[20,6,8,2039],[21,7,8,2039],[22,1,8,2039],[23,2,8,2039],[24,3,8,2039],[25,4,8,2039],[26,5,8,2039],[27,6,8,2039],[28,7,8,2039],[29,1,8,2039],[30,2,8,2039],[31,3,8,2039],[1,4,9,2039],[2,5,9,2039],[3,6,9,2039],[4,7,9,2039],[5,1,9,2039],[6,2,9,2039],[7,3,9,2039],[8,4,9,2039],[9,5,9,2039],[10,6,9,2039],[11,7,9,2039],[12,1,9,2039],[13,2,9,2039],[14,3,9,2039],[15,4,9,2039],[16,5,9,2039],[17,6,9,2039],[18,7,9,2039],[19,1,9,2039],[20,2,9,2039],[21,3,9,2039],[22,4,9,2039],[23,5,9,2039],[24,6,9,2039],[25,7,9,2039],[26,1,9,2039],[27,2,9,2039],[28,3,9,2039],[29,4,9,2039],[30,5,9,2039],[1,6,10,2039],[2,7,10,2039],[3,1,10,2039],[4,2,10,2039],[5,3,10,2039],[6,4,10,2039],[7,5,10,2039],[8,6,10,2039],[9,7,10,2039],[10,1,10,2039],[11,2,10,2039],[12,3,10,2039],[13,4,10,2039],[14,5,10,2039],[15,6,10,2039],[16,7,10,2039],[17,1,10,2039],[18,2,10,2039],[19,3,10,2039],[20,4,10,2039],[21,5,10,2039],[22,6,10,2039],[23,7,10,2039],[24,1,10,2039],[25,2,10,2039],[26,3,10,2039],[27,4,10,2039],[28,5,10,2039],[29,6,10,2039],[30,7,10,2039],[31,1,10,2039],[1,2,11,2039],[2,3,11,2039],[3,4,11,2039],[4,5,11,2039],[5,6,11,2039],[6,7,11,2039],[7,1,11,2039],[8,2,11,2039],[9,3,11,2039],[10,4,11,2039],[11,5,11,2039],[12,6,11,2039],[13,7,11,2039],[14,1,11,2039],[15,2,11,2039],[16,3,11,2039],[17,4,11,2039],[18,5,11,2039],[19,6,11,2039],[20,7,11,2039],[21,1,11,2039],[22,2,11,2039],[23,3,11,2039],[24,4,11,2039],[25,5,11,2039],[26,6,11,2039],[27,7,11,2039],[28,1,11,2039],[29,2,11,2039],[30,3,11,2039],[1,4,12,2039],[2,5,12,2039],[3,6,12,2039],[4,7,12,2039],[5,1,12,2039],[6,2,12,2039],[7,3,12,2039],[8,4,12,2039],[9,5,12,2039],[10,6,12,2039],[11,7,12,2039],[12,1,12,2039],[13,2,12,2039],[14,3,12,2039],[15,4,12,2039],[16,5,12,2039],[17,6,12,2039],[18,7,12,2039],[19,1,12,2039],[20,2,12,2039],[21,3,12,2039],[22,4,12,2039],[23,5,12,2039],[24,6,12,2039],[25,7,12,2039],[26,1,12,2039],[27,2,12,2039],[28,3,12,2039],[29,4,12,2039],[30,5,12,2039],[31,6,12,2039]]
+window = Tk()
+window.geometry('40000x8400')
+window.title("Начало")
+window.title("ТСП")
+
+btn2 = Button(window, text="Сохранить", command=save_final_data)
+btn1 = Button(window, text="Сгенерировать", command=generiotion_file)
+
+screen = Label(window, text="Название кружка=>", font=("Arial Bold", 20))
+screen.grid(column=0, row=0)
+screen1 = Label(window, text="Фио преподавателя=>", font=("Arial Bold", 20))
+screen1.grid(column=0, row=1)
+screen2 = Label(window, text="Название класса=>", font=("Arial Bold", 20))
+screen2.grid(column=0, row=2)
+screen3 = Label(window, text="Файл имен учеников=>", font=("Arial Bold", 20))
+screen3.grid(column=0, row=3)
+screen4 = Label(window, text="Файл дат=>", font=("Arial Bold", 20))
+screen4.grid(column=0, row=4)
+screen5 = Label(window, text="Файл тем=>", font=("Arial Bold", 20))
+screen5.grid(column=0, row=5)
+
+screen6 = Label(window, text="            ", font=("Arial Bold", 20))
+screen6.grid(column=2, row=0)
+
+
+screen7 = Label(window, text="Год=>", font=("Arial Bold", 20))
+screen7.grid(column=0, row=6)
+screen8 = Label(window, text="Дни недели занятия(от 1 до 7,через пробел)=>", font=("Arial Bold", 20))
+screen8.grid(column=0, row=7)
+screen9= Label(window, text="Сколько часов каждое занятие на неделе(через пробел)=>", font=("Arial Bold", 20))
+screen9.grid(column=0, row=8)
+
+vvod1 = Entry(window, width=30)
+vvod1.grid(column=1, row=0)
+vvod2 = Entry(window, width=30)
+vvod2.grid(column=1, row=1)
+vvod3 = Entry(window, width=30)
+vvod3.grid(column=1, row=2)
+
+vvod4 = Entry(window, width=30)
+vvod4.grid(column=1, row=6)
+vvod5 = Entry(window, width=30)
+vvod5.grid(column=1, row=7)
+vvod6 = Entry(window, width=30)
+vvod6.grid(column=1, row=8)
+
+bt1 = Button(window, text="Выбрать", command=save_name_file,width=25)
+bt2 = Button(window, text="Выбрать", command=save_date_file,width=25)
+bt3 = Button(window, text="Выбрать", command=save_theme_file,width=25)
+bt1.grid(column=1, row=3)
+bt2.grid(column=1, row=4)
+bt3.grid(column=1, row=5)
+
+
+posmb1 = Button(window, text="Показать первый кружок", command=check1 ,width=25)
+posmb2 = Button(window, text="Показать второй кружок", command=check2 ,width=25)
+posmb3 = Button(window, text="Показать третий кружок", command=check3 ,width=25)
+posmb4 = Button(window, text="Показать четвертый кружок", command=check4 ,width=25)
+posmb5 = Button(window, text="Показать пятый кружок", command=check5 ,width=25)
+
+posmb11 = Button(window, text="Убрать показ кружка", command=cancel_check ,width=25)
+
+screen0 = Label(window, text="d", font=("Arial Bold", 10))
+screen10 = Label(window, text="d", font=("Arial Bold", 10))
+screen20 = Label(window, text="d", font=("Arial Bold", 10))
+screen30 = Label(window, text="d", font=("Arial Bold", 10))
+screen40 = Label(window, text="d", font=("Arial Bold", 10))
+screen50 = Label(window, text="d", font=("Arial Bold", 10))
+screen70 = Label(window, text="d", font=("Arial Bold", 10))
+screen80 = Label(window, text="d", font=("Arial Bold", 10))
+screen90= Label(window, text="d", font=("Arial Bold", 10))
+
+del1 = Button(window, text="Удалить", command=delet1 ,width=5,bg = '#757575')
+del2 = Button(window, text="Удалить", command=delet2 ,width=5,bg = '#757575')
+del3 = Button(window, text="Удалить", command=delet3 ,width=5,bg = '#757575')
+del4 = Button(window, text="Удалить", command=delet4 ,width=5,bg = '#757575')
+del5 = Button(window, text="Удалить", command=delet5 ,width=5,bg = '#757575')
+
+red1 = Button(window, text="Начать редактирование", command=redact1 ,width=25)
+red_cancel1 = Button(window, text="Закончить редактирование", command=redact_cancel1 ,width=25)
+red2 = Button(window, text="Начать редактирование", command=redact2 ,width=25)
+red_cancel2 = Button(window, text="Закончить редактирование", command=redact_cancel2 ,width=25)
+red3 = Button(window, text="Начать редактирование", command=redact3 ,width=25)
+red_cancel3 = Button(window, text="Закончить редактирование", command=redact_cancel3 ,width=25)
+red4 = Button(window, text="Начать редактирование", command=redact4 ,width=25)
+red_cancel4 = Button(window, text="Закончить редактирование", command=redact_cancel4 ,width=25)
+red5 = Button(window, text="Начать редактирование", command=redact5 ,width=25)
+red_cancel5 = Button(window, text="Закончить редактирование", command=redact_cancel5 ,width=25)
+
+pock= Label(window, text="", font=("Arial Bold", 20))
+pock.grid(column=0, row=8)
+
+butt = Button(window, text="Добавить кружок", command=save_final_data,width=35)
+butt.grid(column=3, row=0)
+
+butt1 = Button(window, text="Генерация файла", command=generiotion_file,width=35,bg = '#FF7D8C')
+butt1.grid(column=3, row=1)
+
+make_pattern = Button(window, text="Скачать инструкцию", command=make_pattern_function,width=35,bg = '#25EF0F')
+
+make_pattern.grid(column=3, row = 8)
+combo = Combobox(window)
+
+window.mainloop()
